@@ -48,9 +48,10 @@ const WalletPanel: React.FC<WalletPanelProps> = ({ balance, onAddFunds }) => {
       {!showAddFunds ? (
         <Button 
           onClick={() => setShowAddFunds(true)}
-          className="mt-3 w-full flex items-center justify-center py-2 bg-game-button hover:bg-opacity-90 text-black"
+          size="sm"  // Use small size
+          className="mt-3 w-auto flex items-center justify-center bg-game-button hover:bg-opacity-90 text-black"
         >
-          <Plus className="mr-1 h-4 w-4" /> Add Funds
+          <Plus className="mr-1 h-3 w-3" /> Add Funds
         </Button>
       ) : (
         <div className="mt-3 space-y-2">
@@ -66,12 +67,14 @@ const WalletPanel: React.FC<WalletPanelProps> = ({ balance, onAddFunds }) => {
             <Button 
               onClick={() => setShowAddFunds(false)}
               variant="outline" 
+              size="sm"
               className="flex-1 bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
             >
               Cancel
             </Button>
             <Button 
               onClick={handleAddFunds}
+              size="sm"
               className="flex-1 bg-game-button hover:bg-opacity-90 text-black"
             >
               Confirm
