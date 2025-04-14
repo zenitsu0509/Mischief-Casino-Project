@@ -1,10 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import GameGrid from './GameGrid';
 import GameControls from './GameControls';
 import GameHeader from './GameHeader';
 import GameResult from './GameResult';
+import WalletPanel from './WalletPanel';
 
 interface Cell {
   isRevealed: boolean;
@@ -29,6 +30,11 @@ const GemsAndMines: React.FC = () => {
   const [isWin, setIsWin] = useState<boolean>(false);
   const [resultAmount, setResultAmount] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  
+  // Wallet state
+  const [walletBalance, setWalletBalance] = useState<number>(100); // Start with $100
+  const [totalWinnings, setTotalWinnings] = useState<number>(0);
+  const [totalLosses, setTotalLosses] = useState<number>(0);
   
   // Derived state
   const totalGems = GRID_SIZE - mineCount;
@@ -73,6 +79,19 @@ const GemsAndMines: React.FC = () => {
   }
   
   function startGame() {
+    // Check if player has enough balance
+    if (walletBalance < betAmount) {
+      toast({
+        title: "Insufficient Balance",
+        description: "Please add more funds to your wallet",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Deduct bet amount from wallet
+    setWalletBalance(prev => prev - betAmount);
+    
     setGrid(generateGame());
     setGemsFound(0);
     setCurrentMultiplier(1);
@@ -90,6 +109,8 @@ const GemsAndMines: React.FC = () => {
     if (newGrid[index].content === 'mine') {
       // Game over - hit a mine
       setGrid(newGrid);
+      // Track losses
+      setTotalLosses(prev => prev + betAmount);
       endGame(false);
     } else {
       // Revealed a gem
@@ -126,6 +147,11 @@ const GemsAndMines: React.FC = () => {
     if (!gameActive) return;
     
     const winAmount = betAmount * currentMultiplier;
+    
+    // Update wallet and track winnings
+    setWalletBalance(prev => prev + winAmount);
+    setTotalWinnings(prev => prev + (winAmount - betAmount));
+    
     setResultAmount(winAmount);
     setIsWin(true);
     setShowResult(true);
@@ -154,6 +180,10 @@ const GemsAndMines: React.FC = () => {
     setShowResult(false);
   }
   
+  function handleAddFunds(amount: number) {
+    setWalletBalance(prev => prev + amount);
+  }
+  
   // Reset result modal when starting a new game
   useEffect(() => {
     if (gameActive) {
@@ -170,30 +200,50 @@ const GemsAndMines: React.FC = () => {
       />
       
       <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
-        <GameGrid 
-          grid={grid} 
-          onCellClick={handleCellClick} 
-          disabled={!gameActive || isGameOver} 
-        />
+        <div className="w-full lg:flex-1 space-y-4">
+          <WalletPanel balance={walletBalance} onAddFunds={handleAddFunds} />
+          <GameGrid 
+            grid={grid} 
+            onCellClick={handleCellClick} 
+            disabled={!gameActive || isGameOver} 
+          />
+        </div>
         
-        <GameControls 
-          betAmount={betAmount}
-          onBetChange={setBetAmount}
-          mineCount={mineCount}
-          onMineCountChange={setMineCount}
-          onStartGame={startGame}
-          onCashOut={cashOut}
-          currentMultiplier={currentMultiplier}
-          gameActive={gameActive}
-          potentialWin={potentialWin}
-          isGameOver={isGameOver}
-        />
+        <div className="w-full lg:w-auto space-y-4">
+          <GameControls 
+            betAmount={betAmount}
+            onBetChange={setBetAmount}
+            mineCount={mineCount}
+            onMineCountChange={setMineCount}
+            onStartGame={startGame}
+            onCashOut={cashOut}
+            currentMultiplier={currentMultiplier}
+            gameActive={gameActive}
+            potentialWin={potentialWin}
+            isGameOver={isGameOver}
+          />
+          
+          <div className="bg-game-panel rounded-lg p-4 w-full max-w-xs">
+            <h2 className="text-xl font-bold text-white mb-4 text-center">Stats</h2>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Total Winnings</span>
+                <span className="text-green-400 font-medium">${totalWinnings.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Total Losses</span>
+                <span className="text-red-400 font-medium">${totalLosses.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <GameResult 
         isVisible={showResult} 
         isWin={isWin} 
         amount={resultAmount} 
+        onClose={handleCloseResult}
       />
     </div>
   );
