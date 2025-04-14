@@ -37,31 +37,32 @@ const WalletPanel: React.FC<WalletPanelProps> = ({ balance, onAddFunds }) => {
 
   return (
     <div className="bg-game-panel rounded-lg p-4 mb-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <Wallet className="text-game-gem h-5 w-5" />
-          <h2 className="text-white font-bold">Wallet</h2>
+          <Wallet className="text-game-gem h-4 w-4" />
+          <h2 className="text-white font-bold text-sm">Wallet</h2>
         </div>
-        <div className="text-xl font-bold text-white">${balance.toFixed(2)}</div>
-      </div>
-
-      {!showAddFunds ? (
         <Button 
           onClick={() => setShowAddFunds(true)}
-          size="sm"  // Use small size
-          className="mt-3 w-auto flex items-center justify-center bg-game-button hover:bg-opacity-90 text-black"
+          size="xs"
+          variant="outline"
+          className="flex items-center justify-center bg-transparent hover:bg-game-button/10 text-white border-game-button/30"
         >
-          <Plus className="mr-1 h-3 w-3" /> Add Funds
+          <Plus className="mr-1 h-3 w-3" /> Add
         </Button>
-      ) : (
-        <div className="mt-3 space-y-2">
+      </div>
+
+      <div className="text-xl font-bold text-white text-center">${balance.toFixed(2)}</div>
+
+      {showAddFunds && (
+        <div className="mt-2 space-y-2">
           <Input
             type="number"
             min="1"
             step="1"
             value={fundAmount}
             onChange={(e) => setFundAmount(parseFloat(e.target.value) || 0)}
-            className="bg-gray-800 text-white border-gray-700"
+            className="bg-gray-800 text-white border-gray-700 h-8"
           />
           <div className="flex gap-2">
             <Button 
