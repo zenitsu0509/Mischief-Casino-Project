@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { createUserData } from "@/services/UserService";
 import { Lock, User } from "lucide-react";
+import { UserCredential } from "firebase/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,14 +36,16 @@ const Login = () => {
           description: "You have successfully logged in.",
         });
       } else {
-        const userCredential = await signup(email, password);
-        if (userCredential && userCredential.user) {
-          await createUserData(userCredential.user.uid);
+        // Fixed: Store the result and check it properly
+        const result = await signup(email, password);
+        // Create user data after successful signup
+        if (result && result.user) {
+          await createUserData(result.user.uid);
+          toast({
+            title: "Account created!",
+            description: "Your account has been created successfully.",
+          });
         }
-        toast({
-          title: "Account created!",
-          description: "Your account has been created successfully.",
-        });
       }
       navigate("/");
     } catch (error: any) {
