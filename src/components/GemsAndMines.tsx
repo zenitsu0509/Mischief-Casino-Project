@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUserData, updateUserData } from '@/services/UserService';
 import GameGrid from './GameGrid';
 import GameControls from './GameControls';
 import GameHeader from './GameHeader';
@@ -18,6 +20,7 @@ const DEFAULT_MINES = 3;
 
 const GemsAndMines: React.FC = () => {
   const { toast } = useToast();
+  const { currentUser } = useAuth();
   
   // Game state
   const [grid, setGrid] = useState<Cell[]>(initializeGrid());
@@ -35,11 +38,47 @@ const GemsAndMines: React.FC = () => {
   const [walletBalance, setWalletBalance] = useState<number>(100); // Start with $100
   const [totalWinnings, setTotalWinnings] = useState<number>(0);
   const [totalLosses, setTotalLosses] = useState<number>(0);
+  const [isLoadingUserData, setIsLoadingUserData] = useState(true);
   
   // Derived state
   const totalGems = GRID_SIZE - mineCount;
   const safeCount = totalGems - gemsFound;
   const potentialWin = betAmount * currentMultiplier;
+  
+  // Load user data from Firebase
+  useEffect(() => {
+    async function loadUserData() {
+      if (!currentUser) return;
+      
+      setIsLoadingUserData(true);
+      const userData = await getUserData(currentUser.uid);
+      
+      if (userData) {
+        setWalletBalance(userData.walletBalance);
+        setTotalWinnings(userData.totalWinnings);
+        setTotalLosses(userData.totalLosses);
+      }
+      
+      setIsLoadingUserData(false);
+    }
+    
+    loadUserData();
+  }, [currentUser]);
+  
+  // Save user data when balance changes
+  useEffect(() => {
+    async function saveUserData() {
+      if (!currentUser || isLoadingUserData) return;
+      
+      await updateUserData(currentUser.uid, {
+        walletBalance,
+        totalWinnings,
+        totalLosses
+      });
+    }
+    
+    saveUserData();
+  }, [walletBalance, totalWinnings, totalLosses, currentUser, isLoadingUserData]);
   
   function initializeGrid(): Cell[] {
     return Array(GRID_SIZE).fill(null).map(() => ({
@@ -190,6 +229,14 @@ const GemsAndMines: React.FC = () => {
       setShowResult(false);
     }
   }, [gameActive]);
+
+  if (isLoadingUserData) {
+    return (
+      <div className="container mx-auto p-4 flex items-center justify-center h-screen">
+        <div className="text-white text-xl">Loading your game data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
