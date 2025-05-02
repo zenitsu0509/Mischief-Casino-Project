@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserData, updateUserData } from '@/services/UserService';
+import { calculateMultiplier, calculatePotentialWin } from '@/utils/gameCalculator';
 import GameGrid from './GameGrid';
 import GameControls from './GameControls';
 import GameHeader from './GameHeader';
@@ -43,7 +44,7 @@ const GemsAndMines: React.FC = () => {
   // Derived state
   const totalGems = GRID_SIZE - mineCount;
   const safeCount = totalGems - gemsFound;
-  const potentialWin = betAmount * currentMultiplier;
+  const potentialWin = calculatePotentialWin(betAmount, currentMultiplier);
   
   // Load user data from Firebase
   useEffect(() => {
@@ -156,8 +157,8 @@ const GemsAndMines: React.FC = () => {
       const newGemsFound = gemsFound + 1;
       setGemsFound(newGemsFound);
       
-      // Calculate new multiplier: totalGems / (totalGems - gemsFound)
-      const newMultiplier = totalGems / (totalGems - newGemsFound);
+      // Calculate new multiplier using the mathematical formula
+      const newMultiplier = calculateMultiplier(GRID_SIZE, mineCount, newGemsFound);
       setCurrentMultiplier(newMultiplier);
       
       // Check if all gems are found
@@ -185,7 +186,7 @@ const GemsAndMines: React.FC = () => {
   function cashOut() {
     if (!gameActive) return;
     
-    const winAmount = betAmount * currentMultiplier;
+    const winAmount = calculatePotentialWin(betAmount, currentMultiplier);
     
     // Update wallet and track winnings
     setWalletBalance(prev => prev + winAmount);
