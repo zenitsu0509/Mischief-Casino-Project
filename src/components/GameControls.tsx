@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { Diamond } from 'lucide-react';
 
 interface GameControlsProps {
   betAmount: number;
@@ -17,6 +18,9 @@ interface GameControlsProps {
   gameActive: boolean;
   potentialWin: number;
   isGameOver: boolean;
+  multiSelectMode?: boolean;
+  selectedCount?: number;
+  onToggleMultiSelect?: () => void;
 }
 
 const GameControls: React.FC<GameControlsProps> = ({
@@ -29,7 +33,10 @@ const GameControls: React.FC<GameControlsProps> = ({
   currentMultiplier,
   gameActive,
   potentialWin,
-  isGameOver
+  isGameOver,
+  multiSelectMode = false,
+  selectedCount = 0,
+  onToggleMultiSelect
 }) => {
   const handleBetChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -118,12 +125,31 @@ const GameControls: React.FC<GameControlsProps> = ({
       </div>
       
       {gameActive && (
-        <div className="bg-[#1a323f] p-3 rounded-md">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-400">Potential Win</span>
-            <span className="text-white font-medium">${potentialWin.toFixed(2)}</span>
+        <>
+          <div className="bg-[#1a323f] p-3 rounded-md">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-gray-400">Potential Win</span>
+              <span className="text-white font-medium">${potentialWin.toFixed(2)}</span>
+            </div>
           </div>
-        </div>
+          
+          {onToggleMultiSelect && (
+            <Button
+              onClick={onToggleMultiSelect}
+              className={cn(
+                "w-full py-2 font-medium flex items-center justify-center",
+                multiSelectMode 
+                  ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                  : "bg-[#1a323f] hover:bg-[#234155] text-white border border-purple-500"
+              )}
+            >
+              <Diamond className="mr-2 h-5 w-5" />
+              {multiSelectMode 
+                ? `Select Mode (${selectedCount} selected)` 
+                : "Multi-Select Mode"}
+            </Button>
+          )}
+        </>
       )}
       
       {!gameActive && !isGameOver && (
@@ -142,9 +168,16 @@ const GameControls: React.FC<GameControlsProps> = ({
       {gameActive && (
         <Button 
           onClick={onCashOut}
-          className="w-full py-6 text-lg font-bold bg-yellow-500 hover:bg-yellow-600 text-black"
+          className={cn(
+            "w-full py-6 text-lg font-bold",
+            multiSelectMode && selectedCount > 0
+              ? "bg-purple-500 hover:bg-purple-600 text-white"
+              : "bg-yellow-500 hover:bg-yellow-600 text-black"
+          )}
         >
-          Cash Out (${potentialWin.toFixed(2)})
+          {multiSelectMode && selectedCount > 0 
+            ? `Reveal ${selectedCount} Tiles` 
+            : `Cash Out (${potentialWin.toFixed(2)})`}
         </Button>
       )}
       

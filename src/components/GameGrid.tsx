@@ -6,6 +6,7 @@ interface GameGridProps {
   grid: Array<{
     isRevealed: boolean;
     content: 'gem' | 'mine' | null;
+    isSelected?: boolean;
   }>;
   onCellClick: (index: number) => void;
   disabled: boolean;
@@ -20,6 +21,7 @@ const GameGrid: React.FC<GameGridProps> = ({ grid, onCellClick, disabled }) => {
           index={index}
           isRevealed={cell.isRevealed}
           content={cell.content}
+          isSelected={cell.isSelected}
           onClick={onCellClick}
           disabled={disabled || cell.isRevealed}
         />

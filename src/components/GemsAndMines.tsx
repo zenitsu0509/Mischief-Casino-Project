@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +17,7 @@ interface GemsAndMinesProps {
 interface Cell {
   isRevealed: boolean;
   content: 'gem' | 'mine' | null;
+  isSelected?: boolean;
 }
 
 const GRID_SIZE = 25; // 5x5 grid
@@ -37,6 +39,8 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   const [isWin, setIsWin] = useState<boolean>(false);
   const [resultAmount, setResultAmount] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false);
+  const [selectedCells, setSelectedCells] = useState<number[]>([]);
   
   // Stats state
   const [totalWinnings, setTotalWinnings] = useState<number>(0);
@@ -65,6 +69,7 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     return Array(GRID_SIZE).fill(null).map(() => ({
       isRevealed: false,
       content: null,
+      isSelected: false,
     }));
   }
   
@@ -118,46 +123,65 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     setGameActive(true);
     setIsGameOver(false);
     setShowResult(false);
+    setMultiSelectMode(false);
+    setSelectedCells([]);
   }
   
   function handleCellClick(index: number) {
     if (!gameActive || grid[index].isRevealed) return;
     
-    const newGrid = [...grid];
-    newGrid[index].isRevealed = true;
-    
-    if (newGrid[index].content === 'mine') {
-      // Game over - hit a mine
-      setGrid(newGrid);
-      // Track losses
-      setTotalLosses(prev => prev + betAmount);
-      endGame(false);
-    } else {
-      // Revealed a gem
-      const newGemsFound = gemsFound + 1;
-      setGemsFound(newGemsFound);
+    if (multiSelectMode) {
+      // In multi-select mode, toggle cell selection
+      const newGrid = [...grid];
+      const isCurrentlySelected = selectedCells.includes(index);
       
-      // Calculate new multiplier using the mathematical formula
-      const newMultiplier = calculateMultiplier(GRID_SIZE, mineCount, newGemsFound);
-      setCurrentMultiplier(newMultiplier);
-      
-      // Check if all gems are found
-      if (newGemsFound === totalGems) {
-        setGrid(newGrid);
-        toast({
-          title: "Amazing!",
-          description: "You found all the gems!",
-        });
-        cashOut();
+      if (isCurrentlySelected) {
+        setSelectedCells(selectedCells.filter(cellIndex => cellIndex !== index));
+        newGrid[index].isSelected = false;
       } else {
+        setSelectedCells([...selectedCells, index]);
+        newGrid[index].isSelected = true;
+      }
+      
+      setGrid(newGrid);
+    } else {
+      // Normal reveal mode
+      const newGrid = [...grid];
+      newGrid[index].isRevealed = true;
+      
+      if (newGrid[index].content === 'mine') {
+        // Game over - hit a mine
         setGrid(newGrid);
+        // Track losses
+        setTotalLosses(prev => prev + betAmount);
+        endGame(false);
+      } else {
+        // Revealed a gem
+        const newGemsFound = gemsFound + 1;
+        setGemsFound(newGemsFound);
         
-        // Show toast for milestone achievements
-        if (newMultiplier >= 2 && Math.floor(newMultiplier) === newMultiplier) {
+        // Calculate new multiplier using the mathematical formula
+        const newMultiplier = calculateMultiplier(GRID_SIZE, mineCount, newGemsFound);
+        setCurrentMultiplier(newMultiplier);
+        
+        // Check if all gems are found
+        if (newGemsFound === totalGems) {
+          setGrid(newGrid);
           toast({
-            title: `${newMultiplier}x Multiplier!`,
-            description: "Keep going or cash out!",
+            title: "Amazing!",
+            description: "You found all the gems!",
           });
+          cashOut();
+        } else {
+          setGrid(newGrid);
+          
+          // Show toast for milestone achievements
+          if (newMultiplier >= 2 && Math.floor(newMultiplier) === newMultiplier) {
+            toast({
+              title: `${newMultiplier}x Multiplier!`,
+              description: "Keep going or cash out!",
+            });
+          }
         }
       }
     }
@@ -166,6 +190,61 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   function cashOut() {
     if (!gameActive) return;
     
+    if (multiSelectMode && selectedCells.length > 0) {
+      // Reveal all selected cells at once
+      let allSafe = true;
+      let gemsFoundCount = gemsFound;
+      const newGrid = [...grid];
+      
+      // First check if all selected cells are safe
+      for (const cellIndex of selectedCells) {
+        if (newGrid[cellIndex].content === 'mine') {
+          allSafe = false;
+          break;
+        }
+      }
+      
+      // Process the cells based on whether they're all safe
+      for (const cellIndex of selectedCells) {
+        newGrid[cellIndex].isRevealed = true;
+        newGrid[cellIndex].isSelected = false;
+        
+        if (newGrid[cellIndex].content === 'gem' && allSafe) {
+          gemsFoundCount++;
+        }
+      }
+      
+      setGrid(newGrid);
+      setSelectedCells([]);
+      setMultiSelectMode(false);
+      
+      if (!allSafe) {
+        // Game over - hit a mine
+        setTotalLosses(prev => prev + betAmount);
+        endGame(false);
+        return;
+      }
+      
+      // All cells were safe, update gem count and multiplier
+      setGemsFound(gemsFoundCount);
+      
+      // Calculate new multiplier
+      const newMultiplier = calculateMultiplier(GRID_SIZE, mineCount, gemsFoundCount);
+      setCurrentMultiplier(newMultiplier);
+      
+      // Check if all gems are found
+      if (gemsFoundCount === totalGems) {
+        toast({
+          title: "Amazing!",
+          description: "You found all the gems!",
+        });
+      }
+      
+      // Since it was a multi-select cash out, we continue the game
+      return;
+    }
+    
+    // Regular cash out
     const winAmount = calculatePotentialWin(betAmount, currentMultiplier);
     
     // Update wallet and track winnings
@@ -182,12 +261,15 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     // Reveal all cells if game is over
     const revealedGrid = grid.map(cell => ({
       ...cell,
-      isRevealed: true
+      isRevealed: true,
+      isSelected: false, // Clear selections
     }));
     
     setGrid(revealedGrid);
     setGameActive(false);
     setIsGameOver(true);
+    setMultiSelectMode(false);
+    setSelectedCells([]);
     
     if (!success) {
       setResultAmount(betAmount);
@@ -198,6 +280,23 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   
   function handleCloseResult() {
     setShowResult(false);
+  }
+  
+  function toggleMultiSelectMode() {
+    if (!gameActive || isGameOver) return;
+    
+    // Toggle multi-select mode
+    setMultiSelectMode(!multiSelectMode);
+    
+    // If turning off multi-select, clear selections
+    if (multiSelectMode) {
+      const newGrid = grid.map(cell => ({
+        ...cell,
+        isSelected: false,
+      }));
+      setGrid(newGrid);
+      setSelectedCells([]);
+    }
   }
   
   // Reset result modal when starting a new game
@@ -236,6 +335,9 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
             gameActive={gameActive}
             potentialWin={potentialWin}
             isGameOver={isGameOver}
+            multiSelectMode={multiSelectMode}
+            selectedCount={selectedCells.length}
+            onToggleMultiSelect={toggleMultiSelectMode}
           />
           
           <div className="bg-[#192a38] rounded-lg p-4 w-full max-w-xs">
