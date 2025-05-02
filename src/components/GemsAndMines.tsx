@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -233,7 +232,7 @@ const GemsAndMines: React.FC = () => {
 
   if (isLoadingUserData) {
     return (
-      <div className="container mx-auto p-4 flex items-center justify-center h-screen">
+      <div className="container mx-auto p-4 flex items-center justify-center h-screen bg-[#192a38]">
         <div className="text-white text-xl">Loading your game data...</div>
       </div>
     );
@@ -271,7 +270,7 @@ const GemsAndMines: React.FC = () => {
             isGameOver={isGameOver}
           />
           
-          <div className="bg-game-panel rounded-lg p-4 w-full max-w-xs">
+          <div className="bg-[#192a38] rounded-lg p-4 w-full max-w-xs">
             <h2 className="text-xl font-bold text-white mb-4 text-center">Stats</h2>
             <div className="space-y-3">
               <div className="flex justify-between">

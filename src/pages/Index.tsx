@@ -4,7 +4,7 @@ import GemsAndMines from '@/components/GemsAndMines';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-game-bg py-8">
+    <div className="min-h-screen bg-[#192a38] py-8">
       <GemsAndMines />
     </div>
   );

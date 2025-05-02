@@ -41,30 +41,59 @@ const GameControls: React.FC<GameControlsProps> = ({
   const handleMineChange = (value: string) => {
     onMineCountChange(parseInt(value));
   };
+  
+  const handleHalfBet = () => {
+    onBetChange(betAmount / 2);
+  };
+  
+  const handleDoubleBet = () => {
+    onBetChange(betAmount * 2);
+  };
 
   return (
-    <div className="bg-game-panel rounded-lg p-4 w-full max-w-xs flex flex-col gap-4">
-      <div className="text-center mb-2">
-        <h2 className="text-xl font-bold text-white">Game Controls</h2>
-      </div>
-      
-      <div className="space-y-2">
+    <div className="bg-[#192a38] rounded-lg p-4 w-full max-w-xs flex flex-col gap-4">
+      <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <Label htmlFor="bet-amount" className="text-white">Bet Amount</Label>
-          <div className="text-sm text-green-400 font-medium">
-            {gameActive && `x${currentMultiplier.toFixed(2)}`}
+          <Label htmlFor="bet-amount" className="text-white text-base">Bet Amount</Label>
+          <div className="text-white text-sm font-medium">
+            ${betAmount.toFixed(2)}
           </div>
         </div>
-        <Input
-          id="bet-amount"
-          type="number"
-          min="0"
-          step="0.01"
-          value={betAmount}
-          onChange={handleBetChange}
-          disabled={gameActive}
-          className="bg-gray-800 text-white border-gray-700"
-        />
+        
+        <div className="relative">
+          <Input
+            id="bet-amount"
+            type="number"
+            min="0"
+            step="0.01"
+            value={betAmount}
+            onChange={handleBetChange}
+            disabled={gameActive}
+            className="bg-[#1a323f] text-white border-[#2c4257] pr-12"
+          />
+          <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center">
+            <span className="text-yellow-500 mr-2">$</span>
+          </div>
+        </div>
+        
+        <div className="flex gap-2 mt-2">
+          <Button 
+            onClick={handleHalfBet}
+            disabled={gameActive}
+            className="flex-1 bg-[#1a323f] hover:bg-[#234155] text-white border border-[#2c4257] h-8"
+            size="sm"
+          >
+            ½
+          </Button>
+          <Button 
+            onClick={handleDoubleBet}
+            disabled={gameActive}
+            className="flex-1 bg-[#1a323f] hover:bg-[#234155] text-white border border-[#2c4257] h-8"
+            size="sm"
+          >
+            2×
+          </Button>
+        </div>
       </div>
       
       <div className="space-y-2">
@@ -74,7 +103,7 @@ const GameControls: React.FC<GameControlsProps> = ({
           onValueChange={handleMineChange}
           disabled={gameActive}
         >
-          <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+          <SelectTrigger className="bg-[#1a323f] text-white border-[#2c4257]">
             <SelectValue placeholder="Select mines" />
           </SelectTrigger>
           <SelectContent>
@@ -89,7 +118,7 @@ const GameControls: React.FC<GameControlsProps> = ({
       </div>
       
       {gameActive && (
-        <div className="bg-gray-800 p-3 rounded-md">
+        <div className="bg-[#1a323f] p-3 rounded-md">
           <div className="flex justify-between items-center mb-1">
             <span className="text-gray-400">Potential Win</span>
             <span className="text-white font-medium">${potentialWin.toFixed(2)}</span>
@@ -103,7 +132,7 @@ const GameControls: React.FC<GameControlsProps> = ({
           disabled={betAmount <= 0}
           className={cn(
             "w-full py-6 text-lg font-bold",
-            betAmount > 0 ? "bg-game-button hover:bg-opacity-90 text-black" : "bg-gray-700"
+            betAmount > 0 ? "bg-[#00ff00] hover:bg-opacity-90 text-black" : "bg-gray-700"
           )}
         >
           Bet
@@ -122,7 +151,7 @@ const GameControls: React.FC<GameControlsProps> = ({
       {isGameOver && (
         <Button 
           onClick={onStartGame}
-          className="w-full py-6 text-lg font-bold bg-game-button hover:bg-opacity-90 text-black"
+          className="w-full py-6 text-lg font-bold bg-[#00ff00] hover:bg-opacity-90 text-black"
         >
           Play Again
         </Button>
