@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,7 +38,7 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
   };
 
   return (
-    <div className="w-full bg-[#0a1118] py-3 px-4 flex justify-between items-center border-b border-blue-900/30">
+    <div className="w-full bg-[#192a38] py-3 px-4 flex justify-between items-center rounded-lg">
       <div className="flex items-center gap-2">
         <span className="text-yellow-400 font-bold">$</span>
         <span className="text-white font-bold">{balance.toFixed(2)}</span>
@@ -55,7 +54,7 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
       </Button>
       
       {showAddDialog && (
-        <div className="absolute right-4 top-14 bg-[#1a1f2c] p-3 rounded-lg shadow-xl border border-blue-900/30 z-10 w-64">
+        <div className="absolute right-4 top-16 bg-[#1a1f2c] p-3 rounded-lg shadow-xl border border-blue-900/30 z-10 w-64">
           <div className="text-white font-medium mb-2">Add funds</div>
           <div className="flex gap-2 mb-2">
             {[10, 50, 100].map((value) => (

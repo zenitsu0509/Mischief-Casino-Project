@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -307,7 +306,7 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   }, [gameActive]);
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
+    <div className="w-full"> 
       <GameHeader 
         safeCount={safeCount} 
         gemsFound={gemsFound} 
