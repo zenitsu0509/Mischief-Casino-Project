@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserData, updateUserData } from '@/services/UserService';
+import { updateUserData } from '@/services/UserService';
 import { calculateMultiplier, calculatePotentialWin } from '@/utils/gameCalculator';
 import GameGrid from './GameGrid';
 import GameControls from './GameControls';
 import GameHeader from './GameHeader';
 import GameResult from './GameResult';
-import WalletPanel from './WalletPanel';
+
+interface GemsAndMinesProps {
+  initialBalance: number;
+  onBalanceChange: (newBalance: number) => void;
+}
 
 interface Cell {
   isRevealed: boolean;
@@ -18,7 +22,7 @@ const GRID_SIZE = 25; // 5x5 grid
 const DEFAULT_BET = 10;
 const DEFAULT_MINES = 3;
 
-const GemsAndMines: React.FC = () => {
+const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceChange }) => {
   const { toast } = useToast();
   const { currentUser } = useAuth();
   
@@ -34,51 +38,28 @@ const GemsAndMines: React.FC = () => {
   const [resultAmount, setResultAmount] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   
-  // Wallet state
-  const [walletBalance, setWalletBalance] = useState<number>(100); // Start with $100
+  // Stats state
   const [totalWinnings, setTotalWinnings] = useState<number>(0);
   const [totalLosses, setTotalLosses] = useState<number>(0);
-  const [isLoadingUserData, setIsLoadingUserData] = useState(true);
   
   // Derived state
   const totalGems = GRID_SIZE - mineCount;
   const safeCount = totalGems - gemsFound;
   const potentialWin = calculatePotentialWin(betAmount, currentMultiplier);
   
-  // Load user data from Firebase
-  useEffect(() => {
-    async function loadUserData() {
-      if (!currentUser) return;
-      
-      setIsLoadingUserData(true);
-      const userData = await getUserData(currentUser.uid);
-      
-      if (userData) {
-        setWalletBalance(userData.walletBalance);
-        setTotalWinnings(userData.totalWinnings);
-        setTotalLosses(userData.totalLosses);
-      }
-      
-      setIsLoadingUserData(false);
-    }
-    
-    loadUserData();
-  }, [currentUser]);
-  
-  // Save user data when balance changes
+  // Save user stats
   useEffect(() => {
     async function saveUserData() {
-      if (!currentUser || isLoadingUserData) return;
+      if (!currentUser) return;
       
       await updateUserData(currentUser.uid, {
-        walletBalance,
         totalWinnings,
         totalLosses
       });
     }
     
     saveUserData();
-  }, [walletBalance, totalWinnings, totalLosses, currentUser, isLoadingUserData]);
+  }, [totalWinnings, totalLosses, currentUser]);
   
   function initializeGrid(): Cell[] {
     return Array(GRID_SIZE).fill(null).map(() => ({
@@ -119,7 +100,7 @@ const GemsAndMines: React.FC = () => {
   
   function startGame() {
     // Check if player has enough balance
-    if (walletBalance < betAmount) {
+    if (initialBalance < betAmount) {
       toast({
         title: "Insufficient Balance",
         description: "Please add more funds to your wallet",
@@ -129,7 +110,7 @@ const GemsAndMines: React.FC = () => {
     }
     
     // Deduct bet amount from wallet
-    setWalletBalance(prev => prev - betAmount);
+    onBalanceChange(initialBalance - betAmount);
     
     setGrid(generateGame());
     setGemsFound(0);
@@ -188,7 +169,7 @@ const GemsAndMines: React.FC = () => {
     const winAmount = calculatePotentialWin(betAmount, currentMultiplier);
     
     // Update wallet and track winnings
-    setWalletBalance(prev => prev + winAmount);
+    onBalanceChange(initialBalance + winAmount);
     setTotalWinnings(prev => prev + (winAmount - betAmount));
     
     setResultAmount(winAmount);
@@ -219,24 +200,12 @@ const GemsAndMines: React.FC = () => {
     setShowResult(false);
   }
   
-  function handleAddFunds(amount: number) {
-    setWalletBalance(prev => prev + amount);
-  }
-  
   // Reset result modal when starting a new game
   useEffect(() => {
     if (gameActive) {
       setShowResult(false);
     }
   }, [gameActive]);
-
-  if (isLoadingUserData) {
-    return (
-      <div className="container mx-auto p-4 flex items-center justify-center h-screen bg-[#192a38]">
-        <div className="text-white text-xl">Loading your game data...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
@@ -248,7 +217,6 @@ const GemsAndMines: React.FC = () => {
       
       <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
         <div className="w-full lg:flex-1 space-y-4">
-          <WalletPanel balance={walletBalance} onAddFunds={handleAddFunds} />
           <GameGrid 
             grid={grid} 
             onCellClick={handleCellClick} 
