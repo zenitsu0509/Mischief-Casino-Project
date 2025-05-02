@@ -16,6 +16,15 @@ const HomePage = () => {
           </Link>
         </div>
 
+        {/* Crash Game Card */}
+        <div className="bg-game-panel p-6 rounded-lg shadow-lg text-center">
+          <h2 className="text-2xl font-semibold text-white mb-4">Crash Game</h2>
+          <p className="text-gray-300 mb-4">Watch the multiplier rise and cash out before it crashes!</p>
+          <Link to="/crash-game">
+            <Button className="bg-game-button hover:bg-opacity-90 text-black">Play Now</Button>
+          </Link>
+        </div>
+
         {/* Placeholder for future games */}
         {/* 
         <div className="bg-game-panel p-6 rounded-lg shadow-lg text-center opacity-50">
