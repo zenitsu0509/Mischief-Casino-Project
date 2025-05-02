@@ -1,4 +1,3 @@
-
 import React, { ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -114,12 +113,12 @@ const GameControls: React.FC<GameControlsProps> = ({
             <SelectValue placeholder="Select mines" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="1">1</SelectItem>
-            <SelectItem value="2">2</SelectItem>
-            <SelectItem value="3">3</SelectItem>
-            <SelectItem value="5">5</SelectItem>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="15">15</SelectItem>
+            {/* Generate options from 1 to 24 */}
+            {Array.from({ length: 24 }, (_, i) => i + 1).map((num) => (
+              <SelectItem key={num} value={num.toString()}>
+                {num}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
