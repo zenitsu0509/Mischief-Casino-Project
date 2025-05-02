@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Plus, Wallet as WalletIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,10 +13,13 @@ interface WalletBarProps {
 const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [amount, setAmount] = useState(10);
+  const [customAmount, setCustomAmount] = useState("");
   const { toast } = useToast();
 
   const handleAddFunds = () => {
-    if (amount <= 0) {
+    const finalAmount = customAmount ? parseFloat(customAmount) : amount;
+    
+    if (finalAmount <= 0 || isNaN(finalAmount)) {
       toast({
         title: "Invalid amount",
         description: "Please enter a positive amount",
@@ -24,12 +28,13 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
       return;
     }
     
-    onAddFunds(amount);
+    onAddFunds(finalAmount);
     setShowAddDialog(false);
+    setCustomAmount("");
     
     toast({
       title: "Funds added",
-      description: `$${amount.toFixed(2)} has been added to your wallet`
+      description: `$${finalAmount.toFixed(2)} has been added to your wallet`
     });
   };
 
@@ -57,13 +62,28 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
               <Button
                 key={value}
                 size="sm"
-                variant={amount === value ? "default" : "outline"}
-                className={amount === value ? "bg-[#2563eb] text-white" : "bg-[#1a323f] text-white border-[#2c4257]"}
-                onClick={() => setAmount(value)}
+                variant={amount === value && !customAmount ? "default" : "outline"}
+                className={amount === value && !customAmount ? "bg-[#2563eb] text-white" : "bg-[#1a323f] text-white border-[#2c4257]"}
+                onClick={() => {
+                  setAmount(value);
+                  setCustomAmount("");
+                }}
               >
                 ${value}
               </Button>
             ))}
+          </div>
+          <div className="mb-2">
+            <Input
+              type="number"
+              value={customAmount}
+              onChange={(e) => {
+                setCustomAmount(e.target.value);
+                if (e.target.value) setAmount(0);
+              }}
+              placeholder="Enter custom amount"
+              className="bg-[#1a323f] text-white border-[#2c4257] h-9 mb-1"
+            />
           </div>
           <div className="flex gap-2 mt-3">
             <Button
