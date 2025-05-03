@@ -1,6 +1,5 @@
 
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { AuthService } from './AuthService';
 
 export interface UserGameData {
   walletBalance: number;
@@ -12,11 +11,17 @@ export interface UserGameData {
 
 export async function getUserData(userId: string): Promise<UserGameData | null> {
   try {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
+    // For our simplified implementation, we'll just get user data from AuthService
+    const user = AuthService.getLoggedInUser();
     
-    if (docSnap.exists()) {
-      return docSnap.data() as UserGameData;
+    if (user) {
+      return {
+        walletBalance: user.money,
+        totalWinnings: 0, // Default values
+        totalLosses: 0,   // Default values
+        userId: user.username,
+        lastPlayed: new Date()
+      };
     } else {
       return null;
     }
@@ -27,29 +32,17 @@ export async function getUserData(userId: string): Promise<UserGameData | null> 
 }
 
 export async function createUserData(userId: string, initialData: Partial<UserGameData> = {}): Promise<void> {
-  try {
-    const userData: UserGameData = {
-      walletBalance: 100,
-      totalWinnings: 0,
-      totalLosses: 0,
-      userId,
-      lastPlayed: new Date(),
-      ...initialData
-    };
-    
-    await setDoc(doc(db, "users", userId), userData);
-  } catch (error) {
-    console.error("Error creating user data:", error);
-  }
+  // Since we're using a simplified JSON approach, this function is mostly a placeholder
+  // All user data is handled by AuthService now
+  console.log("Creating user data for", userId);
 }
 
 export async function updateUserData(userId: string, data: Partial<UserGameData>): Promise<void> {
   try {
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
-      ...data,
-      lastPlayed: new Date()
-    });
+    // Update user's money in AuthService
+    if (data.walletBalance !== undefined) {
+      AuthService.updateMoney(userId, data.walletBalance);
+    }
   } catch (error) {
     console.error("Error updating user data:", error);
   }

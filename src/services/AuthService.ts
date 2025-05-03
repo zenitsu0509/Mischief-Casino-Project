@@ -1,3 +1,4 @@
+
 // Simple user authentication service using JSON file
 // This is a simplified implementation for educational purposes only
 
@@ -16,27 +17,56 @@ export class AuthService {
     if (this.isInitialized) return;
     
     try {
-      // Updated path with proper base URL handling
-      const response = await fetch('./data/users.json');
+      // Create a hardcoded fallback user in case the JSON file fails to load
+      const fallbackUser: User = {
+        username: "demo",
+        password: "password",
+        money: 1000
+      };
+
+      // Try to load from JSON file
+      const response = await fetch('/data/users.json');
+      
       if (!response.ok) {
-        console.warn("users.json not found or empty. Starting with an empty user list.");
-        this.users = [];
+        console.warn("users.json not found or empty. Starting with demo user.");
+        this.users = [fallbackUser];
+        this.saveUsers();
         return;
       }
       
       const text = await response.text();
-      if (!text) {
-        console.warn("users.json is empty. Starting with an empty user list.");
-        this.users = [];
+      
+      if (!text || text.trim() === '') {
+        console.warn("users.json is empty. Starting with demo user.");
+        this.users = [fallbackUser];
+        this.saveUsers();
         return;
       }
       
-      this.users = JSON.parse(text);
+      try {
+        this.users = JSON.parse(text);
+        if (!Array.isArray(this.users) || this.users.length === 0) {
+          console.warn("users.json doesn't contain a valid user array. Starting with demo user.");
+          this.users = [fallbackUser];
+          this.saveUsers();
+        }
+      } catch (e) {
+        console.error("Error parsing users.json:", e);
+        this.users = [fallbackUser];
+        this.saveUsers();
+      }
+      
       this.isInitialized = true;
       console.log("User data loaded:", this.users.length, "users");
     } catch (error) {
       console.error("Could not load or parse users.json:", error);
-      this.users = [];
+      // Create a demo user if JSON fails
+      this.users = [{
+        username: "demo",
+        password: "password",
+        money: 1000
+      }];
+      this.saveUsers();
     }
   }
   
@@ -109,7 +139,7 @@ export class AuthService {
     const newUser: User = {
       username,
       password,
-      money: 1000 // Starting money
+      money: 100 // Starting money - 100 coins for free on new account
     };
     
     this.users.push(newUser);

@@ -55,14 +55,15 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     async function saveUserData() {
       if (!currentUser) return;
       
-      await updateUserData(currentUser.uid, {
+      await updateUserData(currentUser.username, {
         totalWinnings,
-        totalLosses
+        totalLosses,
+        walletBalance: initialBalance
       });
     }
     
     saveUserData();
-  }, [totalWinnings, totalLosses, currentUser]);
+  }, [totalWinnings, totalLosses, initialBalance, currentUser]);
   
   function initializeGrid(): Cell[] {
     return Array(GRID_SIZE).fill(null).map(() => ({
