@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import GemsAndMines from '@/components/GemsAndMines';
 import CrashGame from '@/components/CrashGame';
 import WalletBar from '@/components/WalletBar';
-// Button import removed as it's no longer needed
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 type GameType = 'gems' | 'crash';
 
@@ -11,27 +12,48 @@ interface IndexProps {
 }
 
 const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
-  const [walletBalance, setWalletBalance] = useState(100);
-  const [activeGame] = useState<GameType>(initialActiveGame); // Remove setActiveGame as it's no longer needed
+  const { currentUser, updateMoney, refreshUserState } = useAuth();
+  
+  // Refresh user state on component mount to ensure we have the latest data
+  useEffect(() => {
+    refreshUserState();
+  }, [refreshUserState]);
+
+  // Redirect to login if not authenticated
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
 
   const handleAddFunds = (amount: number) => {
-    setWalletBalance(prevBalance => prevBalance + amount);
+    if (currentUser) {
+      const newBalance = currentUser.money + amount;
+      updateMoney(newBalance);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#192a38] flex flex-col items-center p-4">
       {/* Wallet Bar */}
       <div className="w-full max-w-5xl mb-4">
-        <WalletBar balance={walletBalance} onAddFunds={handleAddFunds} />
+        <WalletBar 
+          balance={currentUser?.money || 0} 
+          onAddFunds={handleAddFunds} 
+        />
       </div>
 
       {/* Game Container - Conditionally render the selected game */}
       <div className="w-full max-w-5xl">
-        {activeGame === 'gems' && (
-          <GemsAndMines initialBalance={walletBalance} onBalanceChange={setWalletBalance} />
+        {initialActiveGame === 'gems' && (
+          <GemsAndMines 
+            initialBalance={currentUser?.money || 0} 
+            onBalanceChange={(newBalance) => updateMoney(newBalance)} 
+          />
         )}
-        {activeGame === 'crash' && (
-          <CrashGame initialBalance={walletBalance} onBalanceChange={setWalletBalance} />
+        {initialActiveGame === 'crash' && (
+          <CrashGame 
+            initialBalance={currentUser?.money || 0} 
+            onBalanceChange={(newBalance) => updateMoney(newBalance)} 
+          />
         )}
       </div>
     </div>

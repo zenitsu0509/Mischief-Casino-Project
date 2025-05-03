@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import HomePage from "@/pages/HomePage"; // Corrected import path
+import Login from "./pages/Login"; // Import Login component
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/contexts/AuthContext"; // Import AuthProvider
 
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/mines-hunt" element={<Index />} />
       <Route path="/crash-game" element={<Index activeGame="crash" />} />
+      <Route path="/login" element={<Login />} /> {/* Add Login route */}
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
