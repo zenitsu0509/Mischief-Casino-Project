@@ -36,8 +36,10 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
   const [ball, setBall] = useState<Ball | null>(null);
   const [multipliers, setMultipliers] = useState<number[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
   const pegSize = 10;
   const ballSize = 12;
+  const animationRef = useRef<number | null>(null);
 
   // Generate multipliers based on risk level
   useEffect(() => {
@@ -61,24 +63,29 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     setMultipliers(mults);
   }, [risk, rows]);
 
-  // Generate pegs based on number of rows
+  // Generate pegs based on number of rows and create an equilateral triangle
   useEffect(() => {
     if (!containerRef.current) return;
     
     const width = containerRef.current.clientWidth;
+    const height = Math.round(width * 0.866); // height of equilateral triangle with base = width
+    
     setContainerWidth(width);
+    setContainerHeight(height);
     
     const pegsArray: Peg[] = [];
-    const spacing = width / (rows + 1);
+    const horizontalSpacing = width / (rows + 1);
+    const verticalSpacing = height / (rows + 1);
     
     for (let r = 0; r < rows; r++) {
       const pegsInRow = r + 1;
-      const rowOffset = r % 2 === 0 ? 0 : spacing / 2;
+      // Calculate horizontal offset to center pegs in each row
+      const startX = (width - (pegsInRow - 1) * horizontalSpacing) / 2;
       
       for (let p = 0; p < pegsInRow; p++) {
         pegsArray.push({
-          x: rowOffset + spacing * p + spacing,
-          y: (r + 2) * spacing,
+          x: startX + horizontalSpacing * p,
+          y: verticalSpacing * (r + 1),
         });
       }
     }
@@ -90,26 +97,40 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
   useEffect(() => {
     const handleResize = () => {
       if (!containerRef.current) return;
-      setContainerWidth(containerRef.current.clientWidth);
+      const width = containerRef.current.clientWidth;
+      const height = Math.round(width * 0.866);
+      setContainerWidth(width);
+      setContainerHeight(height);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Animation logic
+  // Cancel animation on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Animation logic with improved physics
   useEffect(() => {
     if (!isDropping || !containerRef.current) return;
     
     const width = containerRef.current.clientWidth;
-    const spacing = width / (rows + 1);
+    const height = containerRef.current.clientHeight;
+    const gravity = 0.2;
+    const friction = 0.9;
     
     // Initialize ball at the top center
     setBall({
       x: width / 2,
-      y: spacing,
+      y: 20, // Start a bit below the top
       vx: 0,
-      vy: 1,
+      vy: 0, // Start with zero velocity
       landed: false,
       slot: null,
     });
@@ -121,8 +142,8 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         
         let newX = prevBall.x + prevBall.vx;
         let newY = prevBall.y + prevBall.vy;
-        let newVx = prevBall.vx;
-        let newVy = prevBall.vy;
+        let newVx = prevBall.vx * friction;
+        let newVy = prevBall.vy + gravity; // Apply gravity
         let hasLanded = prevBall.landed;
         let slotIndex = prevBall.slot;
         
@@ -133,23 +154,34 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
           const distance = Math.sqrt(dx * dx + dy * dy);
           
           if (distance < pegSize + ballSize / 2) {
-            // Ball hits a peg, bounce left or right randomly
-            const direction = Math.random() > 0.5 ? 1 : -1;
-            newVx = direction * 2;
-            newVy = 2;
-            newX = peg.x + direction * (pegSize + ballSize / 2);
+            // Ball hits a peg, calculate bounce vector
+            const bounce = Math.random() > 0.5 ? 1 : -1;
+            const bounceStrength = 1 + Math.random() * 0.5; // Random bounce strength
+            
+            newVx = bounce * bounceStrength;
+            newVy = Math.abs(newVy * 0.5); // Reduce vertical velocity but keep it positive
+            
+            // Move ball outside of peg collision
+            const angle = Math.atan2(dy, dx);
+            const safeDistance = pegSize + ballSize / 2 + 1;
+            newX = peg.x + Math.cos(angle) * safeDistance;
+            newY = peg.y + Math.sin(angle) * safeDistance;
             break;
           }
         }
         
         // Check if ball reached bottom
-        if (newY > (rows + 2) * spacing) {
+        if (newY > height - ballSize / 2) {
           // Calculate which slot the ball landed in
           const slotWidth = width / multipliers.length;
           slotIndex = Math.min(
             Math.floor(newX / slotWidth), 
             multipliers.length - 1
           );
+          
+          // Make sure index is not negative
+          if (slotIndex < 0) slotIndex = 0;
+          
           hasLanded = true;
           
           // Trigger callback with the multiplier
@@ -160,10 +192,10 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         // Ensure ball stays within container bounds
         if (newX < ballSize / 2) {
           newX = ballSize / 2;
-          newVx = Math.abs(newVx);
+          newVx = Math.abs(newVx) * friction; // Bounce with friction
         } else if (newX > width - ballSize / 2) {
           newX = width - ballSize / 2;
-          newVx = -Math.abs(newVx);
+          newVx = -Math.abs(newVx) * friction; // Bounce with friction
         }
         
         return {
@@ -177,12 +209,17 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
       });
       
       if (ball && !ball.landed) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       }
     };
     
-    const animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
   }, [isDropping, pegs, rows, multipliers]);
 
   // Generate multipliers based on risk level
@@ -255,7 +292,8 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="relative h-[600px] w-full bg-game-bg/50 rounded-lg overflow-hidden"
+      className="relative w-full bg-game-bg/50 rounded-lg overflow-hidden"
+      style={{ height: containerHeight || 600 }}
     >
       {/* Pegs */}
       {pegs.map((peg, i) => (
