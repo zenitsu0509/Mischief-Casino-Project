@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Circle } from 'lucide-react';
 
@@ -125,25 +124,31 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     const gravity = 0.2;
     const friction = 0.9;
     
-    // Initialize ball at the top center
+    // Initialize ball at the top center with initial velocity
     setBall({
       x: width / 2,
       y: 20, // Start a bit below the top
       vx: 0,
-      vy: 0, // Start with zero velocity
+      vy: 1, // Start with a small downward velocity to ensure movement
       landed: false,
       slot: null,
     });
     
-    const animate = () => {
+    let lastTimestamp = 0;
+    
+    const animate = (timestamp: number) => {
+      // Calculate delta time to ensure consistent animation regardless of frame rate
+      const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 16 : 1; // normalize to ~60fps
+      lastTimestamp = timestamp;
+      
       setBall(prevBall => {
         if (!prevBall) return null;
         if (prevBall.landed) return prevBall;
         
-        let newX = prevBall.x + prevBall.vx;
-        let newY = prevBall.y + prevBall.vy;
+        let newX = prevBall.x + prevBall.vx * deltaTime;
+        let newY = prevBall.y + prevBall.vy * deltaTime;
         let newVx = prevBall.vx * friction;
-        let newVy = prevBall.vy + gravity; // Apply gravity
+        let newVy = prevBall.vy + (gravity * deltaTime); // Apply gravity with deltaTime
         let hasLanded = prevBall.landed;
         let slotIndex = prevBall.slot;
         
@@ -214,13 +219,14 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     };
     
     animationRef.current = requestAnimationFrame(animate);
+    
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       }
     };
-  }, [isDropping, pegs, rows, multipliers]);
+  }, [isDropping, pegs, multipliers]);
 
   // Generate multipliers based on risk level
   const generateMultipliers = (count: number, riskLevel: string): number[] => {
