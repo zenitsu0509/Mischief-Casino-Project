@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LogOut } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import PlinkoGame from '@/components/PlinkoGame';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const HomePage = () => {
   const { currentUser, logout } = useAuth();
@@ -59,90 +57,73 @@ const HomePage = () => {
             Casino <span className="text-game-gem">Games</span>
           </h1>
           <p className="text-gray-300 max-w-2xl mx-auto mt-2">
-            Select a game below to play, or try our new Plinko game!
+            Select a game below to play
           </p>
         </div>
 
-        {/* Game tabs */}
-        <Tabs defaultValue="plinko" className="mb-8">
-          <TabsList className="w-full max-w-md mx-auto bg-game-panel border border-gray-800">
-            <TabsTrigger 
-              value="plinko"
-              className="flex-1 data-[state=active]:bg-game-button data-[state=active]:text-black"
-            >
-              Plinko
-            </TabsTrigger>
-            <TabsTrigger 
-              value="games"
-              className="flex-1 data-[state=active]:bg-game-button data-[state=active]:text-black"
-            >
-              Other Games
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="plinko" className="mt-6">
-            <Card className="bg-game-panel/90 border-game-button/20 shadow-lg">
+        {/* Games Section */}
+        <div className="space-y-8">
+          {/* Plinko Game */}
+          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-white text-center">
+                Plinko Game
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PlinkoGame />
+            </CardContent>
+          </Card>
+
+          {/* Other Games */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {/* Mines Hunt Game Card */}
+            <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+              <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                <div className="gem bg-game-gem w-20 h-20 animate-pulse-glow"></div>
+              </div>
               <CardHeader>
-                <CardTitle className="text-2xl font-bold text-white text-center">
-                  Plinko Game
-                </CardTitle>
+                <CardTitle className="text-2xl font-semibold text-white text-center">Mines Hunt</CardTitle>
               </CardHeader>
-              <CardContent>
-                <PlinkoGame />
+              <CardContent className="text-center pb-6">
+                <p className="text-gray-300 mb-6">Find the gems, avoid the mines! Test your luck and strategy.</p>
+                {currentUser ? (
+                  <Link to="/mines-hunt">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                  </Link>
+                )}
               </CardContent>
             </Card>
-          </TabsContent>
-          
-          <TabsContent value="games" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-              {/* Mines Hunt Game Card */}
-              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-                <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-                  <div className="gem bg-game-gem w-20 h-20 animate-pulse-glow"></div>
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-semibold text-white text-center">Mines Hunt</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center pb-6">
-                  <p className="text-gray-300 mb-6">Find the gems, avoid the mines! Test your luck and strategy.</p>
-                  {currentUser ? (
-                    <Link to="/mines-hunt">
-                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                    </Link>
-                  ) : (
-                    <Link to="/login">
-                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                    </Link>
-                  )}
-                </CardContent>
-              </Card>
 
-              {/* Crash Game Card */}
-              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-                <div className="h-40 bg-gradient-to-r from-red-500/20 to-yellow-500/20 flex items-center justify-center">
-                  <div className="text-4xl font-bold text-red-500 animate-pulse-glow">
-                    <span className="text-2xl">x</span>1.5<span className="text-yellow-400">+</span>
-                  </div>
+            {/* Crash Game Card */}
+            <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+              <div className="h-40 bg-gradient-to-r from-red-500/20 to-yellow-500/20 flex items-center justify-center">
+                <div className="text-4xl font-bold text-red-500 animate-pulse-glow">
+                  <span className="text-2xl">x</span>1.5<span className="text-yellow-400">+</span>
                 </div>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-semibold text-white text-center">Crash Game</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center pb-6">
-                  <p className="text-gray-300 mb-6">Watch the multiplier rise and cash out before it crashes!</p>
-                  {currentUser ? (
-                    <Link to="/crash-game">
-                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                    </Link>
-                  ) : (
-                    <Link to="/login">
-                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                    </Link>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-white text-center">Crash Game</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center pb-6">
+                <p className="text-gray-300 mb-6">Watch the multiplier rise and cash out before it crashes!</p>
+                {currentUser ? (
+                  <Link to="/crash-game">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {!currentUser && (
           <div className="mt-10 text-center">
