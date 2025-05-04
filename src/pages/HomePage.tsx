@@ -1,10 +1,10 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { LogOut } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import PlinkoGame from '@/components/PlinkoGame';
 
 const HomePage = () => {
   const { currentUser, logout } = useAuth();
@@ -63,20 +63,30 @@ const HomePage = () => {
 
         {/* Games Section */}
         <div className="space-y-8">
-          {/* Plinko Game */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-white text-center">
-                Plinko Game
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PlinkoGame />
-            </CardContent>
-          </Card>
+          {/* Games Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {/* Plinko Game Card */}
+            <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+              <div className="h-40 bg-gradient-to-r from-green-500/20 to-blue-500/20 flex items-center justify-center">
+                <div className="gem bg-game-gem w-20 h-20 animate-pulse-glow"></div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-white text-center">Plinko Game</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center pb-6">
+                <p className="text-gray-300 mb-6">Drop the ball and watch it bounce for big multipliers!</p>
+                {currentUser ? (
+                  <Link to="/plinko-game">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
 
-          {/* Other Games */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {/* Mines Hunt Game Card */}
             <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">

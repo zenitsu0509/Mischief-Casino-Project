@@ -1,11 +1,13 @@
+
 import React, { useEffect } from 'react';
 import GemsAndMines from '@/components/GemsAndMines';
 import CrashGame from '@/components/CrashGame';
+import PlinkoGame from '@/components/PlinkoGame';
 import WalletBar from '@/components/WalletBar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
-type GameType = 'gems' | 'crash';
+type GameType = 'gems' | 'crash' | 'plinko';
 
 interface IndexProps {
   activeGame?: GameType;
@@ -54,6 +56,12 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
             initialBalance={currentUser?.money || 0} 
             onBalanceChange={(newBalance) => updateMoney(newBalance)} 
           />
+        )}
+        {initialActiveGame === 'plinko' && (
+          <div className="bg-game-panel p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold text-white mb-4 text-center">Plinko Game</h2>
+            <PlinkoGame />
+          </div>
         )}
       </div>
     </div>

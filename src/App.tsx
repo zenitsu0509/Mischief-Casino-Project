@@ -1,13 +1,15 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import HomePage from "@/pages/HomePage"; // Corrected import path
-import Login from "./pages/Login"; // Import Login component
+import HomePage from "@/pages/HomePage"; 
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "@/contexts/AuthContext"; // Import AuthProvider
+import { AuthProvider } from "@/contexts/AuthContext";
+import PlinkoGame from "@/components/PlinkoGame";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +19,8 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/mines-hunt" element={<Index />} />
       <Route path="/crash-game" element={<Index activeGame="crash" />} />
-      <Route path="/login" element={<Login />} /> {/* Add Login route */}
+      <Route path="/plinko-game" element={<Index activeGame="plinko" />} />
+      <Route path="/login" element={<Login />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -30,7 +33,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider> {/* Wrap AppRoutes with AuthProvider */}
+        <AuthProvider>
           <AppRoutes />
         </AuthProvider>
       </BrowserRouter>
