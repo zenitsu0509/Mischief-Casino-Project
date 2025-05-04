@@ -47,3 +47,32 @@ export async function updateUserData(userId: string, data: Partial<UserGameData>
     console.error("Error updating user data:", error);
   }
 }
+
+// Add utility functions for user statistics
+export async function updateUserStats(
+  userId: string, 
+  winAmount: number, 
+  betAmount: number
+): Promise<void> {
+  try {
+    const user = AuthService.getLoggedInUser();
+    if (!user) return;
+    
+    let totalWinnings = 0;
+    let totalLosses = 0;
+    
+    if (winAmount > betAmount) {
+      // User won
+      totalWinnings = winAmount - betAmount;
+    } else {
+      // User lost
+      totalLosses = betAmount - winAmount;
+    }
+    
+    console.log(`Updated stats for ${userId}: +${totalWinnings}, -${totalLosses}`);
+    
+    // In a real implementation, we would persist these statistics
+  } catch (error) {
+    console.error("Error updating user statistics:", error);
+  }
+}
