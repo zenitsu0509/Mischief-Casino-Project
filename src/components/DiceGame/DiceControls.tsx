@@ -31,7 +31,7 @@ const DiceControls: React.FC<DiceControlsProps> = ({
   };
 
   const handleHalfBet = () => {
-    onBetAmountChange(betAmount / 2);
+    onBetAmountChange(Math.max(0.5, betAmount / 2));
   };
 
   const handleDoubleBet = () => {
@@ -95,7 +95,7 @@ const DiceControls: React.FC<DiceControlsProps> = ({
       {/* Roll Button */}
       <Button
         onClick={onRoll}
-        disabled={isRolling || betAmount <= 0}
+        disabled={isRolling || betAmount <= 0 || betAmount > balance}
         className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 h-auto text-lg transition-colors"
       >
         {isRolling ? 'Rolling...' : 'Bet'}

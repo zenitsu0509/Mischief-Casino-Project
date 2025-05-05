@@ -23,6 +23,7 @@ const AppRoutes = () => {
       <Route path="/plinko-game" element={<Index activeGame="plinko" />} />
       <Route path="/wheel-game" element={<Index activeGame="wheel" />} />
       <Route path="/dice-game" element={<Index activeGame="dice" />} />
+      <Route path="/rps-game" element={<Index activeGame="rps" />} />
       <Route path="/login" element={<Login />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />

@@ -5,11 +5,12 @@ import CrashGame from '@/components/CrashGame';
 import PlinkoGame from '@/components/PlinkoGame';
 import WheelGame from '@/components/WheelGame';
 import DiceGame from '@/components/DiceGame';
+import RPSGame from '@/components/RPSGame';
 import WalletBar from '@/components/WalletBar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
-type GameType = 'gems' | 'crash' | 'plinko' | 'wheel' | 'dice';
+type GameType = 'gems' | 'crash' | 'plinko' | 'wheel' | 'dice' | 'rps';
 
 interface IndexProps {
   activeGame?: GameType;
@@ -85,6 +86,12 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
           <div className="bg-game-panel p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-white mb-4 text-center">Dice Game</h2>
             <DiceGame />
+          </div>
+        )}
+        {initialActiveGame === 'rps' && (
+          <div className="bg-game-panel p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold text-white mb-4 text-center">Rock Paper Scissors</h2>
+            <RPSGame />
           </div>
         )}
       </div>

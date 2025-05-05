@@ -64,7 +64,7 @@ const HomePage = () => {
         {/* Games Section */}
         <div className="space-y-8">
           {/* Games Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Dice Game Card */}
             <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center">
@@ -89,6 +89,32 @@ const HomePage = () => {
               </CardContent>
             </Card>
             
+            {/* Rock Paper Scissors Card */}
+            <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+              <div className="h-40 bg-gradient-to-r from-indigo-500/20 to-pink-500/20 flex items-center justify-center">
+                <div className="flex space-x-4">
+                  <div className="text-3xl text-indigo-400">✊</div>
+                  <div className="text-3xl text-pink-400">✋</div>
+                  <div className="text-3xl text-purple-400">✌️</div>
+                </div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-white text-center">Rock Paper Scissors</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center pb-6">
+                <p className="text-gray-300 mb-6">Test your luck against the computer and win big!</p>
+                {currentUser ? (
+                  <Link to="/rps-game">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Wheel Game Card */}
             <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-yellow-500/20 to-green-500/20 flex items-center justify-center">
