@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DollarSign, HandRock, HandPaper, HandScissors } from 'lucide-react';
+import { DollarSign } from 'lucide-react';
 
 type Choice = 'rock' | 'paper' | 'scissors' | null;
 
@@ -83,7 +83,7 @@ const RPSControls: React.FC<RPSControlsProps> = ({
             className="bg-game-panel hover:bg-game-button/20 text-white border border-game-button/20 flex flex-col items-center py-6"
             variant="outline"
           >
-            <HandRock className="h-8 w-8 mb-2" />
+            <div className="text-3xl mb-2">✊</div>
             <span>Rock</span>
           </Button>
           
@@ -93,7 +93,7 @@ const RPSControls: React.FC<RPSControlsProps> = ({
             className="bg-game-panel hover:bg-game-button/20 text-white border border-game-button/20 flex flex-col items-center py-6"
             variant="outline"
           >
-            <HandPaper className="h-8 w-8 mb-2" />
+            <div className="text-3xl mb-2">✋</div>
             <span>Paper</span>
           </Button>
           
@@ -103,7 +103,7 @@ const RPSControls: React.FC<RPSControlsProps> = ({
             className="bg-game-panel hover:bg-game-button/20 text-white border border-game-button/20 flex flex-col items-center py-6"
             variant="outline"
           >
-            <HandScissors className="h-8 w-8 mb-2" />
+            <div className="text-3xl mb-2">✌️</div>
             <span>Scissors</span>
           </Button>
         </div>

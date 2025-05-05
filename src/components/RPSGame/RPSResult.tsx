@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HandRock, HandPaper, HandScissors, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 type Choice = 'rock' | 'paper' | 'scissors' | null;
@@ -21,11 +21,11 @@ const RPSResult: React.FC<RPSResultProps> = ({
   isPlaying,
   betAmount
 }) => {
-  const getChoiceIcon = (choice: Choice, size = 16) => {
-    if (choice === 'rock') return <HandRock className={`h-${size} w-${size}`} />;
-    if (choice === 'paper') return <HandPaper className={`h-${size} w-${size}`} />;
-    if (choice === 'scissors') return <HandScissors className={`h-${size} w-${size}`} />;
-    return <HelpCircle className={`h-${size} w-${size} text-gray-500`} />;
+  const getChoiceIcon = (choice: Choice) => {
+    if (choice === 'rock') return "✊";
+    if (choice === 'paper') return "✋";
+    if (choice === 'scissors') return "✌️";
+    return <HelpCircle className="h-12 w-12 text-gray-500" />;
   };
 
   const getOutcomeText = () => {
@@ -68,8 +68,8 @@ const RPSResult: React.FC<RPSResultProps> = ({
             <div className="text-gray-300 mb-2">You</div>
             <div className="bg-game-bg/40 w-24 h-24 rounded-full flex items-center justify-center border-2 border-game-button/30">
               {playerChoice ? (
-                <div className={`text-white transition-all duration-300 ${isPlaying && !outcome ? 'animate-pulse' : ''}`}>
-                  {getChoiceIcon(playerChoice, 12)}
+                <div className={`text-white transition-all duration-300 text-4xl ${isPlaying && !outcome ? 'animate-pulse' : ''}`}>
+                  {getChoiceIcon(playerChoice)}
                 </div>
               ) : (
                 <div className="text-gray-500">?</div>
@@ -83,8 +83,8 @@ const RPSResult: React.FC<RPSResultProps> = ({
             <div className="text-gray-300 mb-2">Computer</div>
             <div className="bg-game-bg/40 w-24 h-24 rounded-full flex items-center justify-center border-2 border-game-button/30">
               {computerChoice ? (
-                <div className="text-white">
-                  {getChoiceIcon(computerChoice, 12)}
+                <div className="text-white text-4xl">
+                  {getChoiceIcon(computerChoice)}
                 </div>
               ) : (
                 <div className={`text-gray-500 ${isPlaying ? 'animate-pulse' : ''}`}>?</div>

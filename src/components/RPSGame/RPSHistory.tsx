@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { HandRock, HandPaper, HandScissors } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Choice = 'rock' | 'paper' | 'scissors' | null;
@@ -22,9 +21,9 @@ interface RPSHistoryProps {
 
 const RPSHistory: React.FC<RPSHistoryProps> = ({ history }) => {
   const getChoiceIcon = (choice: Choice) => {
-    if (choice === 'rock') return <HandRock className="h-4 w-4" />;
-    if (choice === 'paper') return <HandPaper className="h-4 w-4" />;
-    if (choice === 'scissors') return <HandScissors className="h-4 w-4" />;
+    if (choice === 'rock') return "✊";
+    if (choice === 'paper') return "✋";
+    if (choice === 'scissors') return "✌️";
     return null;
   };
 
@@ -73,12 +72,12 @@ const RPSHistory: React.FC<RPSHistoryProps> = ({ history }) => {
                 <tr key={item.id} className="border-b border-game-button/10">
                   <td className="py-2 px-4">{history.length - index}</td>
                   <td className="py-2 px-4 flex items-center">
-                    {getChoiceIcon(item.playerChoice)}
-                    <span className="ml-2 capitalize">{item.playerChoice}</span>
+                    <span className="mr-2">{getChoiceIcon(item.playerChoice)}</span>
+                    <span className="capitalize">{item.playerChoice}</span>
                   </td>
                   <td className="py-2 px-4 flex items-center">
-                    {getChoiceIcon(item.computerChoice)}
-                    <span className="ml-2 capitalize">{item.computerChoice}</span>
+                    <span className="mr-2">{getChoiceIcon(item.computerChoice)}</span>
+                    <span className="capitalize">{item.computerChoice}</span>
                   </td>
                   <td className="py-2 px-4">${item.betAmount.toFixed(2)}</td>
                   <td className={`py-2 px-4 font-medium ${getOutcomeColor(item.outcome)}`}>
