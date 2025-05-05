@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +10,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/contexts/AuthContext";
 import PlinkoGame from "@/components/PlinkoGame";
+import DiceGame from "@/components/DiceGame";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,7 @@ const AppRoutes = () => {
       <Route path="/crash-game" element={<Index activeGame="crash" />} />
       <Route path="/plinko-game" element={<Index activeGame="plinko" />} />
       <Route path="/wheel-game" element={<Index activeGame="wheel" />} />
+      <Route path="/dice-game" element={<Index activeGame="dice" />} />
       <Route path="/login" element={<Login />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
