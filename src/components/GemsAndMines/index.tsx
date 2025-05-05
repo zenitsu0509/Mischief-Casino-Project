@@ -3,10 +3,10 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateUserData } from '@/services/UserService';
 import { calculateMultiplier, calculatePotentialWin } from '@/utils/gameCalculator';
-import GameGrid from './GameGrid';
-import GameControls from './GameControls';
-import GameHeader from './GameHeader';
-import GameResult from './GameResult';
+import GameGrid from '../GameGrid'; // Corrected path
+import GameControls from '../GameControls'; // Corrected path
+import GameHeader from '../GameHeader'; // Corrected path
+import GameResult from '../GameResult'; // Corrected path
 
 interface GemsAndMinesProps {
   initialBalance: number;
