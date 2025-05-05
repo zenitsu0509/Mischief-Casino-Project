@@ -16,7 +16,7 @@ const DiceGame: React.FC = () => {
   const { toast } = useToast();
   
   // Game state
-  const [betAmount, setBetAmount] = useState<number>(0);
+  const [betAmount, setBetAmount] = useState<number>(1); // Default to 1 instead of 0
   const [targetNumber, setTargetNumber] = useState<number>(50);
   const [isRollOver, setIsRollOver] = useState<boolean>(true);
   const [multiplier, setMultiplier] = useState<number>(2.0);
@@ -33,15 +33,11 @@ const DiceGame: React.FC = () => {
     payout: number;
   }>>([]);
   
-  // Auto bet settings
-  const [isAutoBet, setIsAutoBet] = useState<boolean>(false);
-  const [autoBetCount, setAutoBetCount] = useState<number>(0);
-  const [maxAutoBets, setMaxAutoBets] = useState<number>(0);
-  
   // Always refresh user state to ensure we have the latest balance
   useEffect(() => {
     refreshUserState();
-  }, [refreshUserState]);
+    console.log('Current user:', currentUser);
+  }, [refreshUserState, currentUser]);
   
   // Recalculate multiplier when target number or roll over/under changes
   useEffect(() => {
@@ -96,6 +92,7 @@ const DiceGame: React.FC = () => {
     // Deduct bet amount from balance
     const newBalance = currentUser.money - betAmount;
     updateMoney(newBalance);
+    console.log('Deducted bet amount:', betAmount, 'New balance:', newBalance);
     
     // Start rolling animation
     setIsRolling(true);
@@ -105,9 +102,11 @@ const DiceGame: React.FC = () => {
     // Generate random number between 0 and 99.99
     setTimeout(() => {
       const result = parseFloat((Math.random() * 100).toFixed(2));
+      console.log('Roll result:', result, 'Target:', targetNumber, 'IsRollOver:', isRollOver);
       
       // Determine if player has won
       const won = isRollOver ? result > targetNumber : result < targetNumber;
+      console.log('Won:', won);
       
       // Update roll result and win status
       setRollResult(result);
@@ -116,7 +115,9 @@ const DiceGame: React.FC = () => {
       // Update player balance if won
       if (won) {
         const payout = betAmount * multiplier;
-        updateMoney(newBalance + payout);
+        const updatedBalance = newBalance + payout;
+        updateMoney(updatedBalance);
+        console.log('Player won! Payout:', payout, 'Updated balance:', updatedBalance);
         
         toast({
           title: "You won!",
@@ -128,6 +129,7 @@ const DiceGame: React.FC = () => {
           description: `You lost $${betAmount.toFixed(2)}`,
           variant: "destructive"
         });
+        console.log('Player lost. Lost amount:', betAmount);
       }
       
       // Update roll history
@@ -150,28 +152,7 @@ const DiceGame: React.FC = () => {
       
       // End rolling animation
       setIsRolling(false);
-      
-      // Continue auto bet if enabled
-      if (isAutoBet && autoBetCount < maxAutoBets) {
-        setAutoBetCount(prev => prev + 1);
-        // Implement auto bet logic here (e.g., increase/decrease bet after win/loss)
-      } else if (autoBetCount >= maxAutoBets) {
-        setIsAutoBet(false);
-        setAutoBetCount(0);
-      }
     }, 1000);
-  };
-  
-  const toggleAutoBet = (isAuto: boolean, maxBets: number = 0) => {
-    setIsAutoBet(isAuto);
-    setMaxAutoBets(maxBets);
-    setAutoBetCount(0);
-    
-    if (!isAuto) {
-      // Cancel any pending auto bets
-      setAutoBetCount(0);
-      setMaxAutoBets(0);
-    }
   };
   
   const potentialWin = betAmount * multiplier;
@@ -183,8 +164,6 @@ const DiceGame: React.FC = () => {
         <DiceControls
           betAmount={betAmount}
           onBetAmountChange={handleBetAmountChange}
-          isAutoBet={isAutoBet}
-          toggleAutoBet={toggleAutoBet}
           onRoll={handleRoll}
           isRolling={isRolling}
           potentialWin={potentialWin}
