@@ -246,10 +246,9 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     
     // Regular cash out
     const winAmount = calculatePotentialWin(betAmount, currentMultiplier);
-    const balanceAfterBet = initialBalance - betAmount; // Balance after initial bet deduction
     
     // Update wallet and track winnings
-    onBalanceChange(balanceAfterBet + winAmount); // Corrected balance update
+    onBalanceChange(initialBalance + (winAmount - betAmount));
     setTotalWinnings(prev => prev + (winAmount - betAmount));
     
     setResultAmount(winAmount);

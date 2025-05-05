@@ -211,6 +211,11 @@ export class AuthService {
   
   // Update user's money - Fixed to ensure proper updates
   public static updateMoney(username: string, amount: number): void {
+    // Make sure users are loaded
+    if (!this.isInitialized) {
+      this.checkLocalStorage();
+    }
+
     // Find the user in the array
     const userIndex = this.users.findIndex(u => u.username === username);
     
@@ -228,6 +233,25 @@ export class AuthService {
       console.log(`User balance updated: ${username} now has $${amount.toFixed(2)}`);
     } else {
       console.error(`Could not update money: User ${username} not found`);
+      
+      // Try to recover by checking if we have a logged in user in storage
+      const loggedInUser = this.getLoggedInUser();
+      if (loggedInUser && loggedInUser.username) {
+        // Add the user to the users array if not found
+        this.users.push({
+          username: loggedInUser.username,
+          password: "recovered",  // temporary password
+          money: amount
+        });
+        this.saveUsers();
+        
+        // Update storage
+        const userInfo = { username: loggedInUser.username, money: amount };
+        localStorage.setItem('loggedInUser', JSON.stringify(userInfo));
+        sessionStorage.setItem('loggedInUser', JSON.stringify(userInfo));
+        
+        console.log(`Recovered user ${loggedInUser.username} and updated balance to $${amount.toFixed(2)}`);
+      }
     }
   }
 }

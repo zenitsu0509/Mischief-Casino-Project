@@ -36,9 +36,11 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
   const [multipliers, setMultipliers] = useState<number[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [landedSlot, setLandedSlot] = useState<number | null>(null);
   const pegSize = 10;
   const ballSize = 12;
   const animationRef = useRef<number | null>(null);
+  const ballRef = useRef<Ball | null>(null); // Add a ref to track ball state in animation
 
   // Generate multipliers based on risk level
   useEffect(() => {
@@ -61,6 +63,11 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     
     setMultipliers(mults);
   }, [risk, rows]);
+
+  // Sync ball state with ref for animation
+  useEffect(() => {
+    ballRef.current = ball;
+  }, [ball]);
 
   // Generate pegs based on number of rows and create an equilateral triangle
   useEffect(() => {
@@ -106,6 +113,13 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Reset landed slot when starting a new drop
+  useEffect(() => {
+    if (isDropping) {
+      setLandedSlot(null);
+    }
+  }, [isDropping]);
+
   // Cancel animation on unmount
   useEffect(() => {
     return () => {
@@ -124,96 +138,118 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     const gravity = 0.2;
     const friction = 0.9;
     
-    // Initialize ball at the top center with initial velocity
-    setBall({
-      x: width / 2,
+    // Initialize ball at the top center with small random x-offset for natural motion
+    const initialBall = {
+      x: width / 2 + (Math.random() * 2 - 1), // Tiny offset for natural movement
       y: 20, // Start a bit below the top
       vx: 0,
       vy: 1, // Start with a small downward velocity to ensure movement
       landed: false,
       slot: null,
-    });
+    };
+    
+    setBall(initialBall);
+    ballRef.current = initialBall; // Also set the ref to initial ball state
     
     let lastTimestamp = 0;
+    let isAnimating = true; // Flag to track if animation is running
     
     const animate = (timestamp: number) => {
       // Calculate delta time to ensure consistent animation regardless of frame rate
       const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 16 : 1; // normalize to ~60fps
       lastTimestamp = timestamp;
       
-      setBall(prevBall => {
-        if (!prevBall) return null;
-        if (prevBall.landed) return prevBall;
-        
-        let newX = prevBall.x + prevBall.vx * deltaTime;
-        let newY = prevBall.y + prevBall.vy * deltaTime;
-        let newVx = prevBall.vx * friction;
-        let newVy = prevBall.vy + (gravity * deltaTime); // Apply gravity with deltaTime
-        let hasLanded = prevBall.landed;
-        let slotIndex = prevBall.slot;
-        
-        // Check collision with pegs
-        for (const peg of pegs) {
-          const dx = newX - peg.x;
-          const dy = newY - peg.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < pegSize + ballSize / 2) {
-            // Ball hits a peg, calculate bounce vector
-            const bounce = Math.random() > 0.5 ? 1 : -1;
-            const bounceStrength = 1 + Math.random() * 0.5; // Random bounce strength
-            
-            newVx = bounce * bounceStrength;
-            newVy = Math.abs(newVy * 0.5); // Reduce vertical velocity but keep it positive
-            
-            // Move ball outside of peg collision
-            const angle = Math.atan2(dy, dx);
-            const safeDistance = pegSize + ballSize / 2 + 1;
-            newX = peg.x + Math.cos(angle) * safeDistance;
-            newY = peg.y + Math.sin(angle) * safeDistance;
-            break;
-          }
-        }
-        
-        // Check if ball reached bottom
-        if (newY > height - ballSize / 2) {
-          // Calculate which slot the ball landed in
-          const slotWidth = width / multipliers.length;
-          slotIndex = Math.min(
-            Math.floor(newX / slotWidth), 
-            multipliers.length - 1
-          );
-          
-          // Make sure index is not negative
-          if (slotIndex < 0) slotIndex = 0;
-          
-          hasLanded = true;
-          
-          // Trigger callback with the multiplier
-          onBallLand(multipliers[slotIndex]);
-          setIsDropping(false);
-        }
-        
-        // Ensure ball stays within container bounds
-        if (newX < ballSize / 2) {
-          newX = ballSize / 2;
-          newVx = Math.abs(newVx) * friction; // Bounce with friction
-        } else if (newX > width - ballSize / 2) {
-          newX = width - ballSize / 2;
-          newVx = -Math.abs(newVx) * friction; // Bounce with friction
-        }
-        
-        return {
-          x: newX,
-          y: newY,
-          vx: newVx,
-          vy: newVy,
-          landed: hasLanded,
-          slot: slotIndex
-        };
-      });
+      if (!ballRef.current || !isAnimating) return;
       
-      if (ball && !ball.landed) {
+      let newBall = { ...ballRef.current };
+      
+      if (newBall.landed) {
+        isAnimating = false;
+        return;
+      }
+      
+      let newX = newBall.x + newBall.vx * deltaTime;
+      let newY = newBall.y + newBall.vy * deltaTime;
+      let newVx = newBall.vx * friction;
+      let newVy = newBall.vy + (gravity * deltaTime); // Apply gravity with deltaTime
+      let hasLanded = false;
+      let slotIndex = newBall.slot;
+      
+      // Add slight center bias to make the ball more likely to fall toward the center
+      // This helps with the triangle distribution without being too obvious
+      const centerBias = (width / 2 - newX) * 0.001;
+      newVx += centerBias;
+      
+      // Check collision with pegs
+      for (const peg of pegs) {
+        const dx = newX - peg.x;
+        const dy = newY - peg.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < pegSize + ballSize / 2) {
+          // Ball hits a peg, calculate bounce vector
+          const bounce = Math.random() > 0.5 ? 1 : -1;
+          const bounceStrength = 1 + Math.random() * 0.5; // Random bounce strength
+          
+          newVx = bounce * bounceStrength;
+          newVy = Math.abs(newVy * 0.5); // Reduce vertical velocity but keep it positive
+          
+          // Move ball outside of peg collision
+          const angle = Math.atan2(dy, dx);
+          const safeDistance = pegSize + ballSize / 2 + 1;
+          newX = peg.x + Math.cos(angle) * safeDistance;
+          newY = peg.y + Math.sin(angle) * safeDistance;
+          break;
+        }
+      }
+      
+      // Check if ball reached bottom
+      if (newY > height - ballSize / 2) {
+        // Calculate which slot the ball landed in
+        const slotWidth = width / multipliers.length;
+        slotIndex = Math.min(
+          Math.floor(newX / slotWidth), 
+          multipliers.length - 1
+        );
+        
+        // Make sure index is not negative
+        if (slotIndex < 0) slotIndex = 0;
+        
+        hasLanded = true;
+        isAnimating = false;
+        
+        // Set landed slot for highlighting
+        setLandedSlot(slotIndex);
+        
+        // Trigger callback with the multiplier
+        onBallLand(multipliers[slotIndex]);
+        setIsDropping(false);
+      }
+      
+      // Ensure ball stays within container bounds
+      if (newX < ballSize / 2) {
+        newX = ballSize / 2;
+        newVx = Math.abs(newVx) * friction; // Bounce with friction
+      } else if (newX > width - ballSize / 2) {
+        newX = width - ballSize / 2;
+        newVx = -Math.abs(newVx) * friction; // Bounce with friction
+      }
+      
+      const updatedBall = {
+        x: newX,
+        y: newY,
+        vx: newVx,
+        vy: newVy,
+        landed: hasLanded,
+        slot: slotIndex
+      };
+      
+      // Update both state and ref
+      setBall(updatedBall);
+      ballRef.current = updatedBall;
+      
+      // Continue animation if not landed
+      if (isAnimating) {
         animationRef.current = requestAnimationFrame(animate);
       }
     };
@@ -221,6 +257,7 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     animationRef.current = requestAnimationFrame(animate);
     
     return () => {
+      isAnimating = false;
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
@@ -333,10 +370,17 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         {multipliers.map((value, i) => (
           <div 
             key={`slot-${i}`} 
-            className={`flex items-center justify-center h-12 ${getMultiplierColor(value)} text-white font-bold`}
+            className={`flex items-center justify-center h-12 ${getMultiplierColor(value)} text-white font-bold
+              ${landedSlot === i ? 'border-t-4 border-white brightness-125 scale-y-110 transform origin-bottom' : ''}
+            `}
             style={{ width: `${100 / multipliers.length}%` }}
           >
             {value.toFixed(value % 1 === 0 ? 0 : 1)}x
+            {landedSlot === i && 
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded shadow-lg">
+                Win: {value}x
+              </div>
+            }
           </div>
         ))}
       </div>

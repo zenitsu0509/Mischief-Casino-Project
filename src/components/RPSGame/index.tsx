@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import RPSControls from './RPSControls';
@@ -29,11 +28,12 @@ const RPSGame: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [history, setHistory] = useState<GameHistoryItem[]>([]);
 
+  // Use effect to update balance from currentUser, but only when currentUser.money changes
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser?.money !== undefined) {
       setBalance(currentUser.money);
     }
-  }, [currentUser]);
+  }, [currentUser?.money]); // Only update when money value changes, not on every render
 
   const determineWinner = (player: Choice, computer: Choice): Outcome => {
     if (player === computer) return 'draw';
