@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import GemsAndMines from '@/components/GemsAndMines';
 import CrashGame from '@/components/CrashGame';
 import PlinkoGame from '@/components/PlinkoGame';
@@ -15,11 +16,15 @@ interface IndexProps {
 
 const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
   const { currentUser, updateMoney, refreshUserState } = useAuth();
+  const [userBalance, setUserBalance] = useState<number>(currentUser?.money || 0);
   
   // Refresh user state on component mount to ensure we have the latest data
   useEffect(() => {
     refreshUserState();
-  }, [refreshUserState]);
+    if (currentUser) {
+      setUserBalance(currentUser.money);
+    }
+  }, [refreshUserState, currentUser]);
 
   // Redirect to login if not authenticated
   if (!currentUser) {
@@ -30,7 +35,13 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
     if (currentUser) {
       const newBalance = currentUser.money + amount;
       updateMoney(newBalance);
+      setUserBalance(newBalance);
     }
+  };
+
+  const handleBalanceChange = (newBalance: number) => {
+    updateMoney(newBalance);
+    setUserBalance(newBalance);
   };
 
   return (
@@ -38,7 +49,7 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
       {/* Wallet Bar */}
       <div className="w-full max-w-5xl mb-4">
         <WalletBar 
-          balance={currentUser?.money || 0} 
+          balance={userBalance} 
           onAddFunds={handleAddFunds} 
         />
       </div>
@@ -47,14 +58,14 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
       <div className="w-full max-w-5xl">
         {initialActiveGame === 'gems' && (
           <GemsAndMines 
-            initialBalance={currentUser?.money || 0} 
-            onBalanceChange={(newBalance) => updateMoney(newBalance)} 
+            initialBalance={userBalance} 
+            onBalanceChange={handleBalanceChange} 
           />
         )}
         {initialActiveGame === 'crash' && (
           <CrashGame 
-            initialBalance={currentUser?.money || 0} 
-            onBalanceChange={(newBalance) => updateMoney(newBalance)} 
+            initialBalance={userBalance} 
+            onBalanceChange={handleBalanceChange} 
           />
         )}
         {initialActiveGame === 'plinko' && (

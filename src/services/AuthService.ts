@@ -1,4 +1,3 @@
-
 // Simple user authentication service using JSON file
 // This is a simplified implementation for educational purposes only
 
@@ -210,18 +209,25 @@ export class AuthService {
     sessionStorage.removeItem('loggedInUser');
   }
   
-  // Update user's money
+  // Update user's money - Fixed to ensure proper updates
   public static updateMoney(username: string, amount: number): void {
+    // Find the user in the array
     const userIndex = this.users.findIndex(u => u.username === username);
     
     if (userIndex !== -1) {
+      // Update the money amount
       this.users[userIndex].money = amount;
+      // Save the changes
       this.saveUsers();
       
-      // Update both localStorage and sessionStorage
+      // Update both localStorage and sessionStorage with the updated user data
       const userInfo = { username, money: amount };
       localStorage.setItem('loggedInUser', JSON.stringify(userInfo));
       sessionStorage.setItem('loggedInUser', JSON.stringify(userInfo));
+      
+      console.log(`User balance updated: ${username} now has $${amount.toFixed(2)}`);
+    } else {
+      console.error(`Could not update money: User ${username} not found`);
     }
   }
 }

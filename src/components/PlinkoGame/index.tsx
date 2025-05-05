@@ -5,9 +5,10 @@ import PlinkoControls from './PlinkoControls';
 import PlinkoResult from './PlinkoResult';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { updateUserStats } from '@/services/UserService';
 
 const PlinkoGame: React.FC = () => {
-  const { currentUser, updateMoney } = useAuth();
+  const { currentUser, updateMoney, refreshUserState } = useAuth();
   const { toast } = useToast();
   
   const [rows, setRows] = useState<number>(16);
@@ -15,6 +16,11 @@ const PlinkoGame: React.FC = () => {
   const [isDropping, setIsDropping] = useState<boolean>(false);
   const [betAmount, setBetAmount] = useState<number>(0);
   const [lastMultiplier, setLastMultiplier] = useState<number | null>(null);
+
+  // Always refresh user state to ensure we have the latest balance
+  React.useEffect(() => {
+    refreshUserState();
+  }, [refreshUserState]);
 
   const handleBet = (amount: number) => {
     if (!currentUser) {
@@ -46,7 +52,11 @@ const PlinkoGame: React.FC = () => {
 
     // Set betting amount and deduct from balance
     setBetAmount(amount);
-    updateMoney(currentUser.money - amount);
+    
+    // Update balance in the context and database
+    const newBalance = currentUser.money - amount;
+    updateMoney(newBalance);
+    
     setIsDropping(true);
     setLastMultiplier(null);
   };
@@ -59,6 +69,11 @@ const PlinkoGame: React.FC = () => {
     if (currentUser) {
       const newBalance = currentUser.money + winnings;
       updateMoney(newBalance);
+      
+      // Track statistics
+      if (currentUser.username) {
+        updateUserStats(currentUser.username, winnings, betAmount);
+      }
 
       // Show toast with result
       if (multiplier >= 1) {
