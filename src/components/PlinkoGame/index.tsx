@@ -1,11 +1,12 @@
-
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import PlinkoBoard from './PlinkoBoard';
 import PlinkoControls from './PlinkoControls';
 import PlinkoResult from './PlinkoResult';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateUserStats } from '@/services/UserService';
+import { Button } from '@/components/ui/button'; // Import Button
 
 const PlinkoGame: React.FC = () => {
   const { currentUser, updateMoney, refreshUserState } = useAuth();
@@ -92,32 +93,41 @@ const PlinkoGame: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {/* Controls */}
-      <div className="md:col-span-1">
-        <PlinkoControls
-          onBet={handleBet}
-          onRowsChange={setRows}
-          onRiskChange={setRisk}
-          isDropping={isDropping}
-          balance={currentUser?.money || 0}
-        />
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
       </div>
-      
-      {/* Game Board */}
-      <div className="md:col-span-2 lg:col-span-3 relative">
-        <PlinkoBoard
-          rows={rows}
-          risk={risk}
-          onBallLand={handleBallLand}
-          isDropping={isDropping}
-          setIsDropping={setIsDropping}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Controls */}
+        <div className="md:col-span-1">
+          <PlinkoControls
+            onBet={handleBet}
+            onRowsChange={setRows}
+            onRiskChange={setRisk}
+            isDropping={isDropping}
+            balance={currentUser?.money || 0}
+          />
+        </div>
         
-        <PlinkoResult
-          multiplier={lastMultiplier}
-          betAmount={betAmount}
-        />
+        {/* Game Board */}
+        <div className="md:col-span-2 lg:col-span-3 relative">
+          <PlinkoBoard
+            rows={rows}
+            risk={risk}
+            onBallLand={handleBallLand}
+            isDropping={isDropping}
+            setIsDropping={setIsDropping}
+          />
+          
+          <PlinkoResult
+            multiplier={lastMultiplier}
+            betAmount={betAmount}
+          />
+        </div>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
   
   const animationRef = useRef<number | null>(null);
   const spinTimeRef = useRef<number>(0);
-  const spinStartRef = useRef<number>(0);
+  const spinStartTSRef = useRef<number | null>(null);
   const spinDurationRef = useRef<number>(3000); // 3 seconds spin
   const pointerRef = useRef<HTMLDivElement>(null);
   
@@ -47,12 +47,14 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
     
     // Reset rotation and refs for new spin
     spinTimeRef.current = 0;
-    spinStartRef.current = Date.now();
+    spinStartTSRef.current = null;
     const targetSegmentIndex = getRandomSegmentIndex(currentMultipliers, risk);
+    setSelectedIndex(null); // Reset selected index when starting a new spin
     
     const spinWheel = (timestamp: number) => {
-      const now = Date.now();
-      spinTimeRef.current = now - spinStartRef.current;
+      if (spinStartTSRef.current === null) spinStartTSRef.current = timestamp;
+      // Calculate elapsed time based on timestamp
+      spinTimeRef.current = timestamp - spinStartTSRef.current!;
       const progress = Math.min(spinTimeRef.current / spinDurationRef.current, 1);
       
       // Easing functions to make spin more natural
@@ -63,30 +65,37 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
       const segmentAngle = 360 / segments;
       const targetRotation = targetSegmentIndex * segmentAngle;
       const totalRotation = rotation + targetRotation;
-      
       setRotation(totalRotation % 360);
-      
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(spinWheel);
-      } else {
-        // Spin complete
-        setSelectedIndex(targetSegmentIndex);
-        onWheelStop(currentMultipliers[targetSegmentIndex]);
-        
-        // End spinning state after result is displayed
-        setTimeout(() => {
-          setIsSpinning(false);
-        }, 1000);
       }
     };
     
+    // Start animation
     animationRef.current = requestAnimationFrame(spinWheel);
-    
+    // Ensure spin stops after fixed duration
+    const timeoutId = window.setTimeout(() => {
+      // Cancel any ongoing animation
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+      // Set final rotation exactly on target segment
+      const segmentAngle = 360 / segments;
+      const targetRotation = targetSegmentIndex * segmentAngle;
+      setRotation(targetRotation);
+      // Complete spin
+      setSelectedIndex(targetSegmentIndex);
+      setIsSpinning(false);
+      onWheelStop(currentMultipliers[targetSegmentIndex]);
+    }, spinDurationRef.current);
+    // Cleanup on effect cleanup
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       }
+      clearTimeout(timeoutId);
     };
   }, [isSpinning, currentMultipliers, segments, risk, onWheelStop, setIsSpinning]);
 

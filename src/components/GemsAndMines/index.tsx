@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateUserData } from '@/services/UserService';
@@ -7,6 +8,7 @@ import GameGrid from '../GameGrid'; // Corrected path
 import GameControls from '../GameControls'; // Corrected path
 import GameHeader from '../GameHeader'; // Corrected path
 import GameResult from '../GameResult'; // Corrected path
+import { Button } from '@/components/ui/button'; // Import Button
 
 interface GemsAndMinesProps {
   initialBalance: number;
@@ -307,61 +309,70 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   }, [gameActive]);
 
   return (
-    <div className="w-full"> 
-      <GameHeader 
-        safeCount={safeCount} 
-        gemsFound={gemsFound} 
-        totalGems={totalGems} 
-      />
-      
-      <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
-        <div className="w-full lg:flex-1 space-y-4">
-          <GameGrid 
-            grid={grid} 
-            onCellClick={handleCellClick} 
-            disabled={!gameActive || isGameOver} 
-          />
-        </div>
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
+      </div>
+      <div className="w-full"> 
+        <GameHeader 
+          safeCount={safeCount} 
+          gemsFound={gemsFound} 
+          totalGems={totalGems} 
+        />
         
-        <div className="w-full lg:w-auto space-y-4">
-          <GameControls 
-            betAmount={betAmount}
-            onBetChange={setBetAmount}
-            mineCount={mineCount}
-            onMineCountChange={setMineCount}
-            onStartGame={startGame}
-            onCashOut={cashOut}
-            currentMultiplier={currentMultiplier}
-            gameActive={gameActive}
-            potentialWin={potentialWin}
-            isGameOver={isGameOver}
-            multiSelectMode={multiSelectMode}
-            selectedCount={selectedCells.length}
-            onToggleMultiSelect={toggleMultiSelectMode}
-          />
+        <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
+          <div className="w-full lg:flex-1 space-y-4">
+            <GameGrid 
+              grid={grid} 
+              onCellClick={handleCellClick} 
+              disabled={!gameActive || isGameOver} 
+            />
+          </div>
           
-          <div className="bg-[#192a38] rounded-lg p-4 w-full max-w-xs">
-            <h2 className="text-xl font-bold text-white mb-4 text-center">Stats</h2>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Winnings</span>
-                <span className="text-green-400 font-medium">${totalWinnings.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Losses</span>
-                <span className="text-red-400 font-medium">${totalLosses.toFixed(2)}</span>
+          <div className="w-full lg:w-auto space-y-4">
+            <GameControls 
+              betAmount={betAmount}
+              onBetChange={setBetAmount}
+              mineCount={mineCount}
+              onMineCountChange={setMineCount}
+              onStartGame={startGame}
+              onCashOut={cashOut}
+              currentMultiplier={currentMultiplier}
+              gameActive={gameActive}
+              potentialWin={potentialWin}
+              isGameOver={isGameOver}
+              multiSelectMode={multiSelectMode}
+              selectedCount={selectedCells.length}
+              onToggleMultiSelect={toggleMultiSelectMode}
+            />
+            
+            <div className="bg-[#192a38] rounded-lg p-4 w-full max-w-xs">
+              <h2 className="text-xl font-bold text-white mb-4 text-center">Stats</h2>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Total Winnings</span>
+                  <span className="text-green-400 font-medium">${totalWinnings.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Total Losses</span>
+                  <span className="text-red-400 font-medium">${totalLosses.toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        
+        <GameResult 
+          isVisible={showResult} 
+          isWin={isWin} 
+          amount={resultAmount} 
+          onClose={handleCloseResult}
+        />
       </div>
-      
-      <GameResult 
-        isVisible={showResult} 
-        isWin={isWin} 
-        amount={resultAmount} 
-        onClose={handleCloseResult}
-      />
     </div>
   );
 };

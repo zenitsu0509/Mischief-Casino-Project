@@ -175,11 +175,6 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
       let hasLanded = false;
       let slotIndex = newBall.slot;
       
-      // Add slight center bias to make the ball more likely to fall toward the center
-      // This helps with the triangle distribution without being too obvious
-      const centerBias = (width / 2 - newX) * 0.001;
-      newVx += centerBias;
-      
       // Check collision with pegs
       for (const peg of pegs) {
         const dx = newX - peg.x;
@@ -275,7 +270,7 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         const position = Math.abs((i - (count - 1) / 2) / ((count - 1) / 2));
         let multiplier;
         
-        if (position < 0.2) multiplier = 1;
+        if (position < 0.2) multiplier = 0.2; // Changed from 1 to 0.2
         else if (position < 0.4) multiplier = 1.5;
         else if (position < 0.6) multiplier = 2;
         else if (position < 0.8) multiplier = 3;
@@ -289,7 +284,7 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         const position = Math.abs((i - (count - 1) / 2) / ((count - 1) / 2));
         let multiplier;
         
-        if (position < 0.15) multiplier = 1;
+        if (position < 0.15) multiplier = 0.2; // Changed from 1 to 0.2
         else if (position < 0.3) multiplier = 1.5;
         else if (position < 0.45) multiplier = 3;
         else if (position < 0.6) multiplier = 5;
@@ -305,7 +300,7 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
         const position = Math.abs((i - (count - 1) / 2) / ((count - 1) / 2));
         let multiplier;
         
-        if (position < 0.15) multiplier = 0.5;
+        if (position < 0.15) multiplier = 0.2; // Changed from 0.5 to 0.2
         else if (position < 0.3) multiplier = 1;
         else if (position < 0.45) multiplier = 3;
         else if (position < 0.6) multiplier = 10;
@@ -329,6 +324,7 @@ const PlinkoBoard: React.FC<PlinkoBoardProps> = ({
     if (value >= 3) return 'bg-amber-500';
     if (value >= 1.5) return 'bg-amber-400';
     if (value >= 1) return 'bg-yellow-400';
+    if (value < 1 && value > 0) return 'bg-red-300'; // Added color for losing multiplier
     return 'bg-yellow-500';
   };
 

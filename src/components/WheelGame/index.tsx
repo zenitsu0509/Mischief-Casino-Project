@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react'; // Import useCallback
+import { Link } from 'react-router-dom'; // Import Link
 import WheelBoard from './WheelBoard';
 import WheelControls from './WheelControls';
 import WheelResult from './WheelResult';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button'; // Import Button
 
 const WheelGame: React.FC = () => {
   const { currentUser, updateMoney } = useAuth();
@@ -51,7 +53,7 @@ const WheelGame: React.FC = () => {
     setIsSpinning(true);
   };
 
-  const handleWheelStop = (multiplier: number) => {
+  const handleWheelStop = useCallback((multiplier: number) => {
     const winnings = betAmount * multiplier;
     setLastMultiplier(multiplier);
 
@@ -76,7 +78,7 @@ const WheelGame: React.FC = () => {
         });
       }
     }
-  };
+  }, [betAmount, currentUser, updateMoney, toast, setLastMultiplier]); // Add dependencies for useCallback
 
   // Handle updates to segment count or risk level
   const handleSegmentsChange = (count: number) => {
@@ -88,33 +90,42 @@ const WheelGame: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {/* Controls */}
-      <div className="md:col-span-1">
-        <WheelControls
-          onBet={handleBet}
-          onSegmentsChange={handleSegmentsChange}
-          onRiskChange={handleRiskChange}
-          isSpinning={isSpinning}
-          balance={currentUser?.money || 0}
-        />
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
       </div>
-      
-      {/* Game Board */}
-      <div className="md:col-span-2 lg:col-span-3 relative">
-        <WheelBoard
-          segments={segments}
-          risk={risk}
-          onWheelStop={handleWheelStop}
-          isSpinning={isSpinning}
-          setIsSpinning={setIsSpinning}
-          setMultipliers={setMultipliers}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Controls */}
+        <div className="md:col-span-1">
+          <WheelControls
+            onBet={handleBet}
+            onSegmentsChange={handleSegmentsChange}
+            onRiskChange={handleRiskChange}
+            isSpinning={isSpinning}
+            balance={currentUser?.money || 0}
+          />
+        </div>
         
-        <WheelResult
-          multiplier={lastMultiplier}
-          betAmount={betAmount}
-        />
+        {/* Game Board */}
+        <div className="md:col-span-2 lg:col-span-3 relative">
+          <WheelBoard
+            segments={segments}
+            risk={risk}
+            onWheelStop={handleWheelStop}
+            isSpinning={isSpinning}
+            setIsSpinning={setIsSpinning}
+            setMultipliers={setMultipliers}
+          />
+          
+          <WheelResult
+            multiplier={lastMultiplier}
+            betAmount={betAmount}
+          />
+        </div>
       </div>
     </div>
   );

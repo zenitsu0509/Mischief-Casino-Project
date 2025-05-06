@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import DiceControls from './DiceControls';
@@ -7,6 +7,7 @@ import DiceSlider from './DiceSlider';
 import DiceStats from './DiceStats';
 import DiceResult from './DiceResult';
 import { updateUserStats } from '@/services/UserService';
+import { Button } from '@/components/ui/button'; // Import Button
 
 // Constants
 const HOUSE_EDGE = 0.02; // 2% house edge
@@ -158,78 +159,87 @@ const DiceGame: React.FC = () => {
   const potentialWin = betAmount * multiplier;
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {/* Left Column - Controls */}
-      <div className="md:col-span-1">
-        <DiceControls
-          betAmount={betAmount}
-          onBetAmountChange={handleBetAmountChange}
-          onRoll={handleRoll}
-          isRolling={isRolling}
-          potentialWin={potentialWin}
-          balance={currentUser?.money || 0}
-        />
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
       </div>
-      
-      {/* Right Column - Game Display */}
-      <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-4">
-        <div className="bg-game-panel p-6 rounded-lg shadow-lg">
-          {/* Slider */}
-          <DiceSlider
-            targetNumber={targetNumber}
-            onTargetChange={handleTargetChange}
-            isRollOver={isRollOver}
-            rollResult={rollResult}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Left Column - Controls */}
+        <div className="md:col-span-1">
+          <DiceControls
+            betAmount={betAmount}
+            onBetAmountChange={handleBetAmountChange}
+            onRoll={handleRoll}
+            isRolling={isRolling}
+            potentialWin={potentialWin}
+            balance={currentUser?.money || 0}
           />
-          
-          {/* Stats */}
-          <div className="mt-6">
-            <DiceStats
-              multiplier={multiplier}
-              targetNumber={targetNumber}
-              isRollOver={isRollOver}
-              onRollTypeToggle={handleRollTypeToggle}
-              winChance={winChance}
-            />
-          </div>
         </div>
         
-        {/* Results History */}
-        <div className="bg-game-panel p-6 rounded-lg shadow-lg">
-          <h3 className="text-lg font-bold text-white mb-4">Roll History</h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Current Roll Result */}
-            {rollResult !== null && (
-              <DiceResult 
-                result={rollResult}
-                target={targetNumber}
-                isRollOver={isRollOver}
-                hasWon={hasWon || false}
-              />
-            )}
+        {/* Right Column - Game Display */}
+        <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-4">
+          <div className="bg-game-panel p-6 rounded-lg shadow-lg">
+            {/* Slider */}
+            <DiceSlider
+              targetNumber={targetNumber}
+              onTargetChange={handleTargetChange}
+              isRollOver={isRollOver}
+              rollResult={rollResult}
+            />
             
-            {/* History List */}
-            <div className="bg-game-bg/30 p-4 rounded-md">
-              <h4 className="text-sm font-semibold text-gray-300 mb-2">Previous Rolls</h4>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {rollHistory.map((roll, index) => (
-                  <div 
-                    key={index} 
-                    className={`text-sm p-2 rounded-sm flex justify-between items-center ${
-                      roll.won ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
-                    }`}
-                  >
-                    <span>
-                      {roll.result.toFixed(2)} {roll.isRollOver ? '>' : '<'} {roll.target}
-                    </span>
-                    <span className={roll.won ? 'text-green-300' : 'text-red-300'}>
-                      {roll.won ? `+$${(roll.payout - roll.betAmount).toFixed(2)}` : `-$${roll.betAmount.toFixed(2)}`}
-                    </span>
-                  </div>
-                ))}
-                {rollHistory.length === 0 && (
-                  <div className="text-gray-400 text-center py-4">No rolls yet</div>
-                )}
+            {/* Stats */}
+            <div className="mt-6">
+              <DiceStats
+                multiplier={multiplier}
+                targetNumber={targetNumber}
+                isRollOver={isRollOver}
+                onRollTypeToggle={handleRollTypeToggle}
+                winChance={winChance}
+              />
+            </div>
+          </div>
+          
+          {/* Results History */}
+          <div className="bg-game-panel p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-bold text-white mb-4">Roll History</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Current Roll Result */}
+              {rollResult !== null && (
+                <DiceResult 
+                  result={rollResult}
+                  target={targetNumber}
+                  isRollOver={isRollOver}
+                  hasWon={hasWon || false}
+                />
+              )}
+              
+              {/* History List */}
+              <div className="bg-game-bg/30 p-4 rounded-md">
+                <h4 className="text-sm font-semibold text-gray-300 mb-2">Previous Rolls</h4>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {rollHistory.map((roll, index) => (
+                    <div 
+                      key={index} 
+                      className={`text-sm p-2 rounded-sm flex justify-between items-center ${
+                        roll.won ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
+                      }`}
+                    >
+                      <span>
+                        {roll.result.toFixed(2)} {roll.isRollOver ? '>' : '<'} {roll.target}
+                      </span>
+                      <span className={roll.won ? 'text-green-300' : 'text-red-300'}>
+                        {roll.won ? `+$${(roll.payout - roll.betAmount).toFixed(2)}` : `-$${roll.betAmount.toFixed(2)}`}
+                      </span>
+                    </div>
+                  ))}
+                  {rollHistory.length === 0 && (
+                    <div className="text-gray-400 text-center py-4">No rolls yet</div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

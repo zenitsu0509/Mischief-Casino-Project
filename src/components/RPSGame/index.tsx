@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { useAuth } from '@/contexts/AuthContext';
 import RPSControls from './RPSControls';
 import RPSResult from './RPSResult';
 import RPSHistory from './RPSHistory';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button'; // Import Button
 
 type Choice = 'rock' | 'paper' | 'scissors' | null;
 type Outcome = 'win' | 'loss' | 'draw' | null;
@@ -131,29 +133,38 @@ const RPSGame: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-6">
-      <div className="w-full md:w-1/3">
-        <RPSControls
-          balance={balance}
-          betAmount={betAmount}
-          onBetAmountChange={handleBetAmountChange}
-          onPlay={handlePlay}
-          onHalfBet={handleHalfBet}
-          onDoubleBet={handleDoubleBet}
-          disabled={isPlaying}
-        />
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
       </div>
-      
-      <div className="w-full md:w-2/3 flex flex-col space-y-6">
-        <RPSResult
-          playerChoice={playerChoice}
-          computerChoice={computerChoice}
-          outcome={outcome}
-          isPlaying={isPlaying}
-          betAmount={betAmount}
-        />
+      <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-6">
+        <div className="w-full md:w-1/3">
+          <RPSControls
+            balance={balance}
+            betAmount={betAmount}
+            onBetAmountChange={handleBetAmountChange}
+            onPlay={handlePlay}
+            onHalfBet={handleHalfBet}
+            onDoubleBet={handleDoubleBet}
+            disabled={isPlaying}
+          />
+        </div>
         
-        <RPSHistory history={history} />
+        <div className="w-full md:w-2/3 flex flex-col space-y-6">
+          <RPSResult
+            playerChoice={playerChoice}
+            computerChoice={computerChoice}
+            outcome={outcome}
+            isPlaying={isPlaying}
+            betAmount={betAmount}
+          />
+          
+          <RPSHistory history={history} />
+        </div>
       </div>
     </div>
   );

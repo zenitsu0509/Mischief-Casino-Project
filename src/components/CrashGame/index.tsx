@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateUserData } from '@/services/UserService'; // Assuming similar stats tracking
@@ -239,119 +240,128 @@ const CrashGame: React.FC<CrashGameProps> = ({ initialBalance, onBalanceChange }
   }, []);
 
   return (
-    <div className="bg-[#10212e] rounded-lg p-6 w-full max-w-md mx-auto text-white shadow-xl">
-      <h2 className="text-2xl font-bold text-center mb-4">Crash Game</h2>
+    <div className="flex flex-col gap-4">
+      <div>
+        <Link to="/">
+          <Button variant="outline">
+            &larr; Back to Home
+          </Button>
+        </Link>
+      </div>
+      <div className="bg-[#10212e] rounded-lg p-6 w-full max-w-md mx-auto text-white shadow-xl">
+        <h2 className="text-2xl font-bold text-center mb-4">Crash Game</h2>
 
-      <div className="bg-[#192a38] rounded-lg p-2 mb-4 overflow-x-auto">
-        <p className="text-xs text-gray-400 mb-1">Last {crashHistory.length} crashes (newest first):</p>
-        <div className="flex gap-2 flex-nowrap">
-          {crashHistory.map((point, index) => (
-            <div
-              key={`${point}-${index}`}
-              className={`flex-shrink-0 text-xs px-2 py-1 rounded font-mono ${
-                point < 5 ? 'bg-red-900/50 text-red-300' :
-                point < 15 ? 'bg-yellow-900/50 text-yellow-300' :
-                'bg-green-900/50 text-green-300'
-              }`}
-            >
-              {point.toFixed(2)}x
-            </div>
-          ))}
+        <div className="bg-[#192a38] rounded-lg p-2 mb-4 overflow-x-auto">
+          <p className="text-xs text-gray-400 mb-1">Last {crashHistory.length} crashes (newest first):</p>
+          <div className="flex gap-2 flex-nowrap">
+            {crashHistory.map((point, index) => (
+              <div
+                key={`${point}-${index}`}
+                className={`flex-shrink-0 text-xs px-2 py-1 rounded font-mono ${
+                  point < 5 ? 'bg-red-900/50 text-red-300' :
+                  point < 15 ? 'bg-yellow-900/50 text-yellow-300' :
+                  'bg-green-900/50 text-green-300'
+                }`}
+              >
+                {point.toFixed(2)}x
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="text-center mb-6">
-        <p className={`text-5xl font-bold transition-colors duration-200 ${
-          gameStatus === 'crashed' ? 'text-red-500' :
-          (gameStatus === 'running_after_cashout' && cashedOutAt) ? 'text-gray-400' :
-          gameStatus === 'running' ? 'text-green-400' :
-          'text-white'
-        }`}>
-          {multiplier.toFixed(2)}x
-        </p>
-        {(gameStatus === 'running' || gameStatus === 'running_after_cashout') && (
-          <p className="text-sm text-gray-400 mt-1">Increasing...</p>
-        )}
-        {gameStatus === 'running' && autoMode && targetMultiplier && targetMultiplier > 1 && (
-          <p className="text-xs text-yellow-400 mt-1">Auto cashout at {targetMultiplier.toFixed(2)}x</p>
-        )}
-        {gameStatus === 'running_after_cashout' && cashedOutAt && (
-          <p className="text-sm text-green-500 mt-1">You cashed out at {cashedOutAt.toFixed(2)}x</p>
-        )}
-        {gameStatus === 'crashed' && crashPoint && (
-          <p className="text-lg text-red-500 mt-1">Crashed at {crashPoint.toFixed(2)}x!</p>
-        )}
-        {resultMessage && gameStatus !== 'running' && (
-          <p className={`text-center mt-2 font-medium ${
-            gameStatus === 'crashed' ? 'text-red-400' :
-            gameStatus === 'running_after_cashout' || gameStatus === 'idle' ? 'text-green-400' :
-            'text-gray-400'
+        <div className="text-center mb-6">
+          <p className={`text-5xl font-bold transition-colors duration-200 ${
+            gameStatus === 'crashed' ? 'text-red-500' :
+            (gameStatus === 'running_after_cashout' && cashedOutAt) ? 'text-gray-400' :
+            gameStatus === 'running' ? 'text-green-400' :
+            'text-white'
           }`}>
-            {resultMessage}
+            {multiplier.toFixed(2)}x
           </p>
-        )}
-      </div>
+          {(gameStatus === 'running' || gameStatus === 'running_after_cashout') && (
+            <p className="text-sm text-gray-400 mt-1">Increasing...</p>
+          )}
+          {gameStatus === 'running' && autoMode && targetMultiplier && targetMultiplier > 1 && (
+            <p className="text-xs text-yellow-400 mt-1">Auto cashout at {targetMultiplier.toFixed(2)}x</p>
+          )}
+          {gameStatus === 'running_after_cashout' && cashedOutAt && (
+            <p className="text-sm text-green-500 mt-1">You cashed out at {cashedOutAt.toFixed(2)}x</p>
+          )}
+          {gameStatus === 'crashed' && crashPoint && (
+            <p className="text-lg text-red-500 mt-1">Crashed at {crashPoint.toFixed(2)}x!</p>
+          )}
+          {resultMessage && gameStatus !== 'running' && (
+            <p className={`text-center mt-2 font-medium ${
+              gameStatus === 'crashed' ? 'text-red-400' :
+              gameStatus === 'running_after_cashout' || gameStatus === 'idle' ? 'text-green-400' :
+              'text-gray-400'
+            }`}>
+              {resultMessage}
+            </p>
+          )}
+        </div>
 
-      <div className="flex items-center gap-4 mb-6">
-        <Input
-          type="number"
-          value={betAmount}
-          onChange={(e) => setBetAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-          placeholder="Bet Amount"
-          className="bg-[#0f172a] border-gray-600 text-white flex-grow"
-          disabled={gameStatus !== 'idle'}
-        />
-        {gameStatus === 'idle' && (
-          <Button onClick={startGame} className="bg-blue-600 hover:bg-blue-700">
-            Place Bet
+        <div className="flex items-center gap-4 mb-6">
+          <Input
+            type="number"
+            value={betAmount}
+            onChange={(e) => setBetAmount(Math.max(0, parseFloat(e.target.value) || 0))}
+            placeholder="Bet Amount"
+            className="bg-[#0f172a] border-gray-600 text-white flex-grow"
+            disabled={gameStatus !== 'idle'}
+          />
+          {gameStatus === 'idle' && (
+            <Button onClick={startGame} className="bg-blue-600 hover:bg-blue-700">
+              Place Bet
+            </Button>
+          )}
+        </div>
+
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-white font-medium">Auto Cashout</label>
+            <div className="flex items-center gap-2">
+              {autoMode && (
+                <span className={`text-xs ${targetMultiplier > 1 ? 'text-green-400' : 'text-yellow-500'}`}>
+                  {targetMultiplier > 1 ? `Target: ${targetMultiplier.toFixed(2)}x` : 'Target > 1'}
+                </span>
+              )}
+              <Button
+                onClick={toggleAutoMode}
+                size="sm"
+                variant={autoMode ? "default" : "outline"}
+                className={`text-xs ${autoMode ? 'bg-green-600 hover:bg-green-700' : 'text-gray-400 hover:bg-gray-700'}`}
+                disabled={gameStatus !== 'idle'}
+              >
+                {autoMode ? 'Auto: ON' : 'Auto: OFF'}
+              </Button>
+            </div>
+          </div>
+          {autoMode && (
+            <div className="flex items-center gap-4">
+              <Input
+                type="number"
+                value={targetMultiplier || ''}
+                onChange={(e) => setTargetMultiplier(Math.max(1.01, parseFloat(e.target.value) || 1.01))}
+                placeholder="Target Multiplier (e.g. 2.0)"
+                className="bg-[#0f172a] border-gray-600 text-white flex-grow"
+                disabled={gameStatus !== 'idle'}
+                min="1.01"
+                step="0.01"
+              />
+            </div>
+          )}
+        </div>
+
+        {gameStatus === 'running' && (
+          <Button onClick={cashOut} className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3">
+            Cash Out ({multiplier.toFixed(2)}x = ${(betAmount * multiplier).toFixed(2)})
           </Button>
         )}
-      </div>
 
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <label className="text-white font-medium">Auto Cashout</label>
-          <div className="flex items-center gap-2">
-            {autoMode && (
-              <span className={`text-xs ${targetMultiplier > 1 ? 'text-green-400' : 'text-yellow-500'}`}>
-                {targetMultiplier > 1 ? `Target: ${targetMultiplier.toFixed(2)}x` : 'Target > 1'}
-              </span>
-            )}
-            <Button
-              onClick={toggleAutoMode}
-              size="sm"
-              variant={autoMode ? "default" : "outline"}
-              className={`text-xs ${autoMode ? 'bg-green-600 hover:bg-green-700' : 'text-gray-400 hover:bg-gray-700'}`}
-              disabled={gameStatus !== 'idle'}
-            >
-              {autoMode ? 'Auto: ON' : 'Auto: OFF'}
-            </Button>
-          </div>
+        <div className="text-center mt-4">
+          <p className="text-gray-300">Balance: ${currentBalance.toFixed(2)}</p>
         </div>
-        {autoMode && (
-          <div className="flex items-center gap-4">
-            <Input
-              type="number"
-              value={targetMultiplier || ''}
-              onChange={(e) => setTargetMultiplier(Math.max(1.01, parseFloat(e.target.value) || 1.01))}
-              placeholder="Target Multiplier (e.g. 2.0)"
-              className="bg-[#0f172a] border-gray-600 text-white flex-grow"
-              disabled={gameStatus !== 'idle'}
-              min="1.01"
-              step="0.01"
-            />
-          </div>
-        )}
-      </div>
-
-      {gameStatus === 'running' && (
-        <Button onClick={cashOut} className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3">
-          Cash Out ({multiplier.toFixed(2)}x = ${(betAmount * multiplier).toFixed(2)})
-        </Button>
-      )}
-
-      <div className="text-center mt-4">
-        <p className="text-gray-300">Balance: ${currentBalance.toFixed(2)}</p>
       </div>
     </div>
   );
