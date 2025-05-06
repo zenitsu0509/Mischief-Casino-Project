@@ -4,6 +4,22 @@
 
 **URL**: https://lovable.dev/projects/c834a780-9513-4106-a896-6f97468a1290
 
+## Environment Variables
+
+This project uses environment variables to manage configuration. Create a `.env` file in the project root with the following variables:
+
+```
+# GitHub Gist API Configuration
+VITE_GITHUB_TOKEN=your_github_token
+VITE_GIST_ID=your_gist_id
+VITE_GIST_FILENAME=users.json
+
+# Application Settings
+VITE_APP_NAME=Mines-Hunt
+```
+
+**Note:** The GitHub token should have the `gist` scope enabled. If you encounter 403 Forbidden errors, check that your token is valid and has the correct permissions.
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
