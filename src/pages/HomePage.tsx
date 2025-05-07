@@ -109,7 +109,26 @@ const HomePage = () => {
           {/* Plinko Game Card */}
           <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
             <div className="h-40 bg-gradient-to-r from-green-500/20 to-blue-500/20 flex items-center justify-center">
-              <div className="gem bg-game-gem w-20 h-20 animate-pulse-glow"></div>
+              <div className="flex flex-col items-center justify-center">
+                <div className="relative">
+                  <div className="w-8 h-8 bg-blue-400 rounded-full mb-1 animate-bounce"></div>
+                </div>
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
+                  ))}
+                </div>
+                <div className="flex mt-2">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-blue-600 rounded-full mx-1"></div>
+                  ))}
+                </div>
+                <div className="flex mt-2">
+                  {[...Array(7)].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-blue-700 rounded-full mx-1"></div>
+                  ))}
+                </div>
+              </div>
             </div>
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-white text-center">Plinko Game</CardTitle>
@@ -131,7 +150,23 @@ const HomePage = () => {
           {/* Mines Hunt Game Card */}
           <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
             <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-              <div className="gem bg-game-gem w-20 h-20 animate-pulse-glow"></div>
+              <div className="relative">
+                <div className="flex flex-wrap justify-center gap-2 w-32">
+                  {[...Array(9)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`w-8 h-8 rounded flex items-center justify-center ${i === 4 ? 'bg-blue-500' : 'bg-gray-700/50'}`}
+                    >
+                      {i === 4 && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white animate-pulse-glow">
+                          <polygon points="6 8 17 5 21 18 9 21 4 8" />
+                          <polygon points="10 12 6 8 4 8" />
+                        </svg>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-white text-center">Mines Hunt</CardTitle>
