@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,26 +39,32 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
   };
 
   return (
-    <div className="w-full bg-[#192a38] py-3 px-4 flex justify-between items-center rounded-lg">
-      <div className="flex items-center gap-2">
-        <span className="text-yellow-400 font-bold">$</span>
-        <span className="text-white font-bold">
-          {balance !== null && balance !== undefined ? balance.toFixed(2) : '0.00'}
-        </span>
-      </div>
-      
+    <div className="relative">
       <Button 
         onClick={() => setShowAddDialog(!showAddDialog)}
-        className="bg-[#2563eb] hover:bg-[#3b82f6] text-white"
+        className="bg-[#2563eb]/80 hover:bg-[#3b82f6] text-white transition-all duration-200"
         size="sm"
       >
         <WalletIcon className="w-4 h-4 mr-2" />
-        Wallet
+        <span className="text-yellow-400 font-bold mr-1.5">$</span>
+        <span className="text-white font-bold">
+          {balance !== null && balance !== undefined ? balance.toFixed(2) : '0.00'}
+        </span>
       </Button>
       
       {showAddDialog && (
-        <div className="absolute right-4 top-16 bg-[#1a1f2c] p-3 rounded-lg shadow-xl border border-blue-900/30 z-10 w-64">
-          <div className="text-white font-medium mb-2">Add funds</div>
+        <div className="absolute right-0 top-full mt-2 bg-[#1a1f2c] p-3 rounded-lg shadow-xl border border-blue-900/30 z-10 w-64">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-white font-medium">Add funds</div>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0 text-gray-400 hover:text-white"
+              onClick={() => setShowAddDialog(false)}
+            >
+              ✕
+            </Button>
+          </div>
           <div className="flex gap-2 mb-2">
             {[10, 50, 100].map((value) => (
               <Button
