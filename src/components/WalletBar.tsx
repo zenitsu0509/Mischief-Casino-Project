@@ -41,7 +41,9 @@ const WalletBar: React.FC<WalletBarProps> = ({ balance, onAddFunds }) => {
     <div className="w-full bg-[#192a38] py-3 px-4 flex justify-between items-center rounded-lg">
       <div className="flex items-center gap-2">
         <span className="text-yellow-400 font-bold">$</span>
-        <span className="text-white font-bold">{balance.toFixed(2)}</span>
+        <span className="text-white font-bold">
+          {balance !== null && balance !== undefined ? balance.toFixed(2) : '0.00'}
+        </span>
       </div>
       
       <Button 

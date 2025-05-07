@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -46,26 +46,29 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
   // Stats state
   const [totalWinnings, setTotalWinnings] = useState<number>(0);
   const [totalLosses, setTotalLosses] = useState<number>(0);
+
+  // Ref to track balance changes initiated by this component
+  const isBalanceUpdatedByComponent = useRef<boolean>(false);
   
   // Derived state
   const totalGems = GRID_SIZE - mineCount;
   const safeCount = totalGems - gemsFound;
   const potentialWin = calculatePotentialWin(betAmount, currentMultiplier);
   
-  // Save user stats
+  // Save user stats, but not wallet balance to prevent fluctuation
   useEffect(() => {
     async function saveUserData() {
       if (!currentUser) return;
       
       await updateUserData(currentUser.username, {
         totalWinnings,
-        totalLosses,
-        walletBalance: initialBalance
+        totalLosses
+        // Removed walletBalance to prevent the fluctuation
       });
     }
     
     saveUserData();
-  }, [totalWinnings, totalLosses, initialBalance, currentUser]);
+  }, [totalWinnings, totalLosses, currentUser]);
   
   function initializeGrid(): Cell[] {
     return Array(GRID_SIZE).fill(null).map(() => ({
@@ -117,6 +120,7 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     }
     
     // Deduct bet amount from wallet
+    isBalanceUpdatedByComponent.current = true;
     onBalanceChange(initialBalance - betAmount);
     
     setGrid(generateGame());
@@ -250,6 +254,7 @@ const GemsAndMines: React.FC<GemsAndMinesProps> = ({ initialBalance, onBalanceCh
     const winAmount = calculatePotentialWin(betAmount, currentMultiplier);
     
     // Update wallet and track winnings
+    isBalanceUpdatedByComponent.current = true;
     onBalanceChange(initialBalance + (winAmount - betAmount));
     setTotalWinnings(prev => prev + (winAmount - betAmount));
     

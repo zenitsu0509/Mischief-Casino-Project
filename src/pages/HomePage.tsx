@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -28,7 +27,9 @@ const HomePage = () => {
                   <span className="font-bold text-game-gem">{currentUser.username}</span>
                   <span className="mx-2 text-gray-300">|</span>
                   <span className="text-gray-300">Balance:</span>
-                  <span className="font-bold text-yellow-400 ml-2">${currentUser.money.toFixed(2)}</span>
+                  <span className="font-bold text-yellow-400 ml-2">
+                    ${currentUser.money !== null && currentUser.money !== undefined ? currentUser.money.toFixed(2) : '0.00'}
+                  </span>
                 </div>
                 <Button 
                   onClick={handleLogout} 
