@@ -51,6 +51,7 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
     const targetSegmentIndex = getRandomSegmentIndex(currentMultipliers, risk);
     setSelectedIndex(null); // Reset selected index when starting a new spin
     
+    // Function to handle spinning animation
     const spinWheel = (timestamp: number) => {
       if (spinStartTSRef.current === null) spinStartTSRef.current = timestamp;
       // Calculate elapsed time based on timestamp
@@ -66,29 +67,40 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
       const targetRotation = targetSegmentIndex * segmentAngle;
       const totalRotation = rotation + targetRotation;
       setRotation(totalRotation % 360);
+      
+      // Continue animation if not complete
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(spinWheel);
+      } else {
+        // Animation is complete, ensure wheel stops at exact position
+        const finalRotation = targetSegmentIndex * segmentAngle;
+        setRotation(finalRotation);
+        setSelectedIndex(targetSegmentIndex);
+        setIsSpinning(false);
+        onWheelStop(currentMultipliers[targetSegmentIndex]);
       }
     };
     
     // Start animation
     animationRef.current = requestAnimationFrame(spinWheel);
-    // Ensure spin stops after fixed duration
+    
+    // Force stop after spinDuration as a failsafe
     const timeoutId = window.setTimeout(() => {
-      // Cancel any ongoing animation
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
+        
+        // Ensure final position is set correctly
+        const segmentAngle = 360 / segments;
+        const finalRotation = targetSegmentIndex * segmentAngle;
+        setRotation(finalRotation);
+        setSelectedIndex(targetSegmentIndex);
+        setIsSpinning(false);
+        onWheelStop(currentMultipliers[targetSegmentIndex]);
+        console.log('Wheel spin force-stopped by timeout');
       }
-      // Set final rotation exactly on target segment
-      const segmentAngle = 360 / segments;
-      const targetRotation = targetSegmentIndex * segmentAngle;
-      setRotation(targetRotation);
-      // Complete spin
-      setSelectedIndex(targetSegmentIndex);
-      setIsSpinning(false);
-      onWheelStop(currentMultipliers[targetSegmentIndex]);
-    }, spinDurationRef.current);
+    }, spinDurationRef.current + 100); // Add small buffer
+    
     // Cleanup on effect cleanup
     return () => {
       if (animationRef.current) {
@@ -287,7 +299,7 @@ const WheelBoard: React.FC<WheelBoardProps> = ({
     if (value <= 40) return '#ea580c'; // orange-600
     return '#dc2626'; // red-600
   };
-  
+
   // Define key multipliers to show in the legend
   const keyMultipliers = [0.00, 1.50, 1.70, 2.00, 3.00, 4.00];
 
