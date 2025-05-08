@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -69,33 +68,6 @@ const HomePage = () => {
               <p className="text-gray-300 mb-6">Test your luck against the computer and win big!</p>
               {currentUser ? (
                 <Link to="/rps-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Wheel Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-yellow-500/20 to-green-500/20 flex items-center justify-center">
-              <div className="text-5xl font-bold text-yellow-500 animate-pulse-glow rounded-full p-6 relative">
-                <span className="absolute transform -rotate-45 text-green-400 text-2xl">2x</span>
-                <span className="absolute transform rotate-45 text-red-400 text-2xl">5x</span>
-                <span className="absolute transform rotate-135 text-blue-400 text-2xl">0x</span>
-                <span className="absolute transform -rotate-135 text-purple-400 text-2xl">10x</span>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Wheel Game</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Spin the wheel to win big multipliers!</p>
-              {currentUser ? (
-                <Link to="/wheel-game">
                   <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
                 </Link>
               ) : (

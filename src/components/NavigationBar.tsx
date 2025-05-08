@@ -53,7 +53,6 @@ const NavigationBar: React.FC = () => {
                     {[
                       { name: "Dice Game", link: "/dice-game", description: "Bet on dice rolls with custom odds and multipliers!" },
                       { name: "Rock Paper Scissors", link: "/rps-game", description: "Test your luck against the computer and win big!" },
-                      { name: "Wheel Game", link: "/wheel-game", description: "Spin the wheel to win big multipliers!" },
                       { name: "Plinko Game", link: "/plinko-game", description: "Drop the ball and watch it bounce for big multipliers!" },
                       { name: "Mines Hunt", link: "/mines-hunt", description: "Find the gems, avoid the mines! Test your luck and strategy." },
                       { name: "Crash Game", link: "/crash-game", description: "Watch the multiplier rise and cash out before it crashes!" },
@@ -157,7 +156,6 @@ const NavigationBar: React.FC = () => {
               {[
                 { name: "Dice Game", link: "/dice-game" },
                 { name: "Rock Paper Scissors", link: "/rps-game" },
-                { name: "Wheel Game", link: "/wheel-game" },
                 { name: "Plinko Game", link: "/plinko-game" },
                 { name: "Mines Hunt", link: "/mines-hunt" },
                 { name: "Crash Game", link: "/crash-game" },

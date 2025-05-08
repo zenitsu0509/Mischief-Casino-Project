@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
@@ -33,11 +32,10 @@ const Footer: React.FC = () => {
           
           {/* Games */}
           <div className="col-span-1">
-            <h3 className="font-bold text-lg mb-4">Games</h3>
-            <ul className="space-y-2 text-gray-300 text-sm">
+            <h3 className="font-medium text-white mb-3">Games</h3>
+            <ul className="space-y-2">
               <li><Link to="/dice-game" className="hover:text-game-gem">Dice Game</Link></li>
               <li><Link to="/rps-game" className="hover:text-game-gem">Rock Paper Scissors</Link></li>
-              <li><Link to="/wheel-game" className="hover:text-game-gem">Wheel Game</Link></li>
               <li><Link to="/plinko-game" className="hover:text-game-gem">Plinko Game</Link></li>
               <li><Link to="/mines-hunt" className="hover:text-game-gem">Mines Hunt</Link></li>
               <li><Link to="/crash-game" className="hover:text-game-gem">Crash Game</Link></li>
