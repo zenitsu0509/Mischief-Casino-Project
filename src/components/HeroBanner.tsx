@@ -56,11 +56,13 @@ const HeroBanner: React.FC = () => {
           {/* Hero image/decoration */}
           <div className="relative flex items-center justify-center">
             <div className="w-64 h-64 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-gradient-to-br from-game-gem/30 to-blue-500/30 rounded-full flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/f864aefc-58f1-4b50-b96d-d8f7ecc8245e.png" 
-                alt="Mischief Logo" 
-                className="w-48 h-48 md:w-56 md:h-56 lg:w-72 lg:h-72 object-contain drop-shadow-[0_0_15px_rgba(46,213,115,0.6)]"
-              />
+              <div className="rounded-full overflow-hidden w-48 h-48 md:w-56 md:h-56 lg:w-72 lg:h-72 bg-black/20 p-0">
+                <img 
+                  src="/lovable-uploads/f864aefc-58f1-4b50-b96d-d8f7ecc8245e.png" 
+                  alt="Mischief Logo" 
+                  className="w-full h-full object-cover drop-shadow-[0_0_15px_rgba(46,213,115,0.6)]"
+                />
+              </div>
             </div>
           </div>
         </div>
