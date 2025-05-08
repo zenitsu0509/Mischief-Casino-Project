@@ -180,6 +180,31 @@ const HomePage = () => {
               )}
             </CardContent>
           </Card>
+          
+          {/* Flip Game Card */}
+          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+            <div className="h-40 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 flex items-center justify-center">
+              <div className="flex space-x-8 items-center">
+                <div className="text-4xl text-yellow-400 animate-flip">🪙</div>
+                <div className="text-4xl text-amber-400">💰</div>
+              </div>
+            </div>
+            <CardHeader>
+              <CardTitle className="text-2xl font-semibold text-white text-center">Flip Game</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center pb-6">
+              <p className="text-gray-300 mb-6">Bet on heads or tails and enjoy consecutive win multipliers!</p>
+              {currentUser ? (
+                <Link to="/flip-game">
+                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                </Link>
+              )}
+            </CardContent>
+          </Card>
         </div>
         
         {/* Features Section */}

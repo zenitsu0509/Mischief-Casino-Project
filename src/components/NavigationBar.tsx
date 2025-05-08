@@ -56,6 +56,7 @@ const NavigationBar: React.FC = () => {
                       { name: "Plinko Game", link: "/plinko-game", description: "Drop the ball and watch it bounce for big multipliers!" },
                       { name: "Mines Hunt", link: "/mines-hunt", description: "Find the gems, avoid the mines! Test your luck and strategy." },
                       { name: "Crash Game", link: "/crash-game", description: "Watch the multiplier rise and cash out before it crashes!" },
+                      { name: "Flip Game", link: "/flip-game", description: "Bet on heads or tails and enjoy consecutive win multipliers!" },
                     ].map((game) => (
                       <li key={game.name} className="row-span-1">
                         <Link to={game.link}>
@@ -159,6 +160,7 @@ const NavigationBar: React.FC = () => {
                 { name: "Plinko Game", link: "/plinko-game" },
                 { name: "Mines Hunt", link: "/mines-hunt" },
                 { name: "Crash Game", link: "/crash-game" },
+                { name: "Flip Game", link: "/flip-game" },
               ].map((game) => (
                 <Link 
                   key={game.name} 
