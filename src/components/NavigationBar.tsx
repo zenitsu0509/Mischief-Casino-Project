@@ -25,7 +25,7 @@ const NavigationBar: React.FC = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <div className="gem bg-game-gem w-6 h-6"></div>
-          <span className="text-white font-bold text-xl">GemCasino</span>
+          <span className="text-white font-bold text-xl">Mischief Casino</span>
         </Link>
 
         {/* Desktop Navigation */}
