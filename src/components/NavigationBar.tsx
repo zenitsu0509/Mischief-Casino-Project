@@ -24,7 +24,11 @@ const NavigationBar: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center py-3 px-4 md:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="gem bg-game-gem w-6 h-6"></div>
+          <img 
+            src="/lovable-uploads/f864aefc-58f1-4b50-b96d-d8f7ecc8245e.png" 
+            alt="Mischief Logo" 
+            className="w-9 h-9 object-contain"
+          />
           <span className="text-white font-bold text-xl">Mischief Casino</span>
         </Link>
 
