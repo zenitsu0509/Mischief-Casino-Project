@@ -214,7 +214,7 @@ const HomePage = () => {
         <div className="mt-24 mb-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-              Why Choose <span className="text-game-gem">GemCasino</span>
+              Why Choose <span className="text-game-gem">Mischief Casino</span>
             </h2>
             <p className="text-gray-300 max-w-2xl mx-auto">
               We provide the best gaming experience with fair odds and exciting rewards

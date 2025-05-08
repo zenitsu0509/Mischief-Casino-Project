@@ -48,7 +48,7 @@ const NavigationBar: React.FC = () => {
               
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-transparent text-white hover:bg-game-panel hover:text-white">Games</NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="bg-[#192a38]">
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {[
                       { name: "Dice Game", link: "/dice-game", description: "Bet on dice rolls with custom odds and multipliers!" },
@@ -60,9 +60,9 @@ const NavigationBar: React.FC = () => {
                     ].map((game) => (
                       <li key={game.name} className="row-span-1">
                         <Link to={game.link}>
-                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#2c3e50] hover:text-white focus:bg-[#2c3e50] focus:text-accent-foreground">
-                            <div className="text-sm font-medium leading-none text-white">{game.name}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-gray-300">
+                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#2c3e50] hover:text-accent focus:bg-[#2c3e50] focus:text-accent-foreground">
+                            <div className="text-sm font-medium leading-none text-[#c4d3df]">{game.name}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-gray-400">
                               {game.description}
                             </p>
                           </NavigationMenuLink>

@@ -17,7 +17,7 @@ const HeroBanner: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-4">
-              Experience the Thrill of <span className="text-game-gem">Online Gaming</span>
+              Experience the Thrill of <span className="text-game-gem">Online Casino Gaming</span>
             </h1>
             <p className="text-gray-300 text-lg md:text-xl mb-8">
               Play our exciting selection of games with fair odds, instant payouts, and a chance to win big! Join thousands of players already enjoying Mischief Casino.
