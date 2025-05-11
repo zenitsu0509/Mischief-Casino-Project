@@ -5,11 +5,12 @@ import PlinkoGame from '@/components/PlinkoGame';
 import DiceGame from '@/components/DiceGame';
 import RPSGame from '@/components/RPSGame';
 import FlipGame from '@/components/FlipGame';
+import DragonTower from '@/components/DragonTower';
 import WalletBar from '@/components/WalletBar';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
-type GameType = 'gems' | 'crash' | 'plinko' | 'dice' | 'rps' | 'flip';
+type GameType = 'gems' | 'crash' | 'plinko' | 'dice' | 'rps' | 'flip' | 'dragon';
 
 interface IndexProps {
   activeGame?: GameType;
@@ -46,12 +47,10 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#192a38] flex flex-col items-center p-4">
-      {/* Wallet Bar */}
+    <div className="min-h-screen bg-[#192a38] flex flex-col items-center p-4">      {/* Wallet Bar */}
       <div className="w-full max-w-5xl mb-4">
         <WalletBar 
           balance={userBalance} 
-          onAddFunds={handleAddFunds} 
         />
       </div>
 
@@ -91,6 +90,12 @@ const Index = ({ activeGame: initialActiveGame = 'gems' }: IndexProps) => {
           <div className="bg-game-panel p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-white mb-4 text-center">Flip Game</h2>
             <FlipGame />
+          </div>
+        )}
+        {initialActiveGame === 'dragon' && (
+          <div className="bg-game-panel p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold text-white mb-4 text-center">Dragon Tower</h2>
+            <DragonTower />
           </div>
         )}
       </div>

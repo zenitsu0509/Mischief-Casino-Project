@@ -40,6 +40,7 @@ const Footer: React.FC = () => {
               <li><Link to="/mines-hunt" className="hover:text-game-gem">Mines Hunt</Link></li>
               <li><Link to="/crash-game" className="hover:text-game-gem">Crash Game</Link></li>
               <li><Link to="/flip-game" className="hover:text-game-gem">Flip Game</Link></li>
+              <li><Link to="/dragon-tower" className="hover:text-game-gem">Dragon Tower</Link></li>
             </ul>
           </div>
           

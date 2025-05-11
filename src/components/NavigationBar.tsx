@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Home, LogOut, Menu, User, X } from 'lucide-react';
+import { Home, LogOut, Menu, User, X, Trophy } from 'lucide-react';
 import WalletBar from './WalletBar';
+import Leaderboard from './Leaderboard';
 import { 
   NavigationMenu,
   NavigationMenuContent,
@@ -57,6 +58,7 @@ const NavigationBar: React.FC = () => {
                       { name: "Mines Hunt", link: "/mines-hunt", description: "Find the gems, avoid the mines! Test your luck and strategy." },
                       { name: "Crash Game", link: "/crash-game", description: "Watch the multiplier rise and cash out before it crashes!" },
                       { name: "Flip Game", link: "/flip-game", description: "Bet on heads or tails and enjoy consecutive win multipliers!" },
+                      { name: "Dragon Tower", link: "/dragon-tower", description: "Climb the tower selecting dragon eggs for massive multipliers!" },
                     ].map((game) => (
                       <li key={game.name} className="row-span-1">
                         <Link to={game.link}>
@@ -71,14 +73,19 @@ const NavigationBar: React.FC = () => {
                     ))}
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              
-              <NavigationMenuItem>
-                <Link to="/leaderboard">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle() + " bg-transparent text-white hover:bg-game-panel hover:text-white"}>
-                    Leaderboard
-                  </NavigationMenuLink>
-                </Link>
+              </NavigationMenuItem>              <NavigationMenuItem>                <NavigationMenuTrigger className="bg-transparent text-white hover:bg-game-panel hover:text-white">
+                  <Trophy className="w-4 h-4 mr-2" />
+                  Leaderboard
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-[#192a38] w-[420px]">
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-white mb-3 flex items-center">
+                      <Trophy className="w-5 h-5 text-yellow-400 mr-2" />
+                      Top Players
+                    </h3>
+                    <Leaderboard mini={true} maxItems={7} />
+                  </div>
+                </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -93,14 +100,10 @@ const NavigationBar: React.FC = () => {
         </div>
 
         {/* User Section */}
-        <div className="flex items-center gap-2">
-          {currentUser && (
+        <div className="flex items-center gap-2">          {currentUser && (
             <div className="hidden md:block mr-2">
               <WalletBar 
                 balance={currentUser.money || 0} 
-                onAddFunds={(amount) => {
-                  // Handle add funds logic here
-                }}
               />
             </div>
           )}
@@ -161,6 +164,7 @@ const NavigationBar: React.FC = () => {
                 { name: "Mines Hunt", link: "/mines-hunt" },
                 { name: "Crash Game", link: "/crash-game" },
                 { name: "Flip Game", link: "/flip-game" },
+                { name: "Dragon Tower", link: "/dragon-tower" },
               ].map((game) => (
                 <Link 
                   key={game.name} 
@@ -171,11 +175,15 @@ const NavigationBar: React.FC = () => {
                   {game.name}
                 </Link>
               ))}
+            </div>            <div className="px-3 py-2 space-y-2">
+              <div className="flex items-center text-white">
+                <Trophy className="w-5 h-5 text-yellow-400 inline mr-2" />
+                <span className="font-semibold">Top Players</span>
+              </div>
+              <div className="mt-3 bg-game-bg/30 rounded-lg p-3 border border-game-button/20">
+                <Leaderboard mini={true} maxItems={5} />
+              </div>
             </div>
-            
-            <Link to="/leaderboard" className="block px-3 py-2 rounded hover:bg-game-panel text-white" onClick={() => setMobileMenuOpen(false)}>
-              Leaderboard
-            </Link>
             
             <Link to="/how-to-play" className="block px-3 py-2 rounded hover:bg-game-panel text-white" onClick={() => setMobileMenuOpen(false)}>
               How to Play

@@ -8,203 +8,240 @@ import Footer from '@/components/Footer';
 import HeroBanner from '@/components/HeroBanner';
 
 const HomePage = () => {
-  const { currentUser } = useAuth();
-
-  return (
+  const { currentUser } = useAuth();  return (
     <div className="min-h-screen bg-gradient-to-b from-game-bg to-game-panel/50">
       <NavigationBar />
       
-      <HeroBanner />
-      
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-            Popular <span className="text-game-gem">Games</span>
-          </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Try your luck with our selection of exciting games. Each game offers unique gameplay and chances to win!
-          </p>
-        </div>
-
-        {/* Games Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Dice Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-              <div className="text-5xl font-bold text-blue-400 animate-pulse-glow">
-                <span className="text-4xl">50.50</span>
-              </div>
+      <HeroBanner />      <div className="container mx-auto px-4 py-16">
+        {/* Games Section */}
+        <div className="grid grid-cols-1 gap-8 mb-12">
+          <div className="w-full">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
+                Popular <span className="text-game-gem">Games</span>
+              </h2>
+              <p className="text-gray-300 max-w-2xl mx-auto">
+                Try your luck with our selection of exciting games. Each game offers unique gameplay and chances to win!
+              </p>
             </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Dice Game</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Bet on dice rolls with custom odds and multipliers!</p>
-              {currentUser ? (
-                <Link to="/dice-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Rock Paper Scissors Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-indigo-500/20 to-pink-500/20 flex items-center justify-center">
-              <div className="flex space-x-4">
-                <div className="text-3xl text-indigo-400">✊</div>
-                <div className="text-3xl text-pink-400">✋</div>
-                <div className="text-3xl text-purple-400">✌️</div>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Rock Paper Scissors</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Test your luck against the computer and win big!</p>
-              {currentUser ? (
-                <Link to="/rps-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
+            
+            {/* Games Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 lg:gap-8">
+              {/* Dice Game Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                  <div className="text-5xl font-bold text-blue-400 animate-pulse-glow">
+                    <span className="text-4xl">50.50</span>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Dice Game</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Bet on dice rolls with custom odds and multipliers!</p>
+                  {currentUser ? (
+                    <Link to="/dice-game">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+              
+              {/* Rock Paper Scissors Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-indigo-500/20 to-pink-500/20 flex items-center justify-center">
+                  <div className="flex space-x-4">
+                    <div className="text-3xl text-indigo-400">✊</div>
+                    <div className="text-3xl text-pink-400">✋</div>
+                    <div className="text-3xl text-purple-400">✌️</div>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Rock Paper Scissors</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Test your luck against the computer and win big!</p>
+                  {currentUser ? (
+                    <Link to="/rps-game">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
 
-          {/* Plinko Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-green-500/20 to-blue-500/20 flex items-center justify-center">
-              <div className="flex flex-col items-center justify-center">
-                <div className="relative">
-                  <div className="w-8 h-8 bg-blue-400 rounded-full mb-1 animate-bounce"></div>
-                </div>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
-                  ))}
-                </div>
-                <div className="flex mt-2">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 bg-blue-600 rounded-full mx-1"></div>
-                  ))}
-                </div>
-                <div className="flex mt-2">
-                  {[...Array(7)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 bg-blue-700 rounded-full mx-1"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Plinko Game</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Drop the ball and watch it bounce for big multipliers!</p>
-              {currentUser ? (
-                <Link to="/plinko-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Mines Hunt Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-              <div className="relative">
-                <div className="flex flex-wrap justify-center gap-2 w-32">
-                  {[...Array(9)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`w-8 h-8 rounded flex items-center justify-center ${i === 4 ? 'bg-blue-500' : 'bg-gray-700/50'}`}
-                    >
-                      {i === 4 && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white animate-pulse-glow">
-                          <polygon points="6 8 17 5 21 18 9 21 4 8" />
-                          <polygon points="10 12 6 8 4 8" />
-                        </svg>
-                      )}
+              {/* Plinko Game Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-green-500/20 to-blue-500/20 flex items-center justify-center">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="relative">
+                      <div className="w-8 h-8 bg-blue-400 rounded-full mb-1 animate-bounce"></div>
                     </div>
-                  ))}
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
+                      ))}
+                    </div>
+                    <div className="flex mt-2">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="w-2 h-2 bg-blue-600 rounded-full mx-1"></div>
+                      ))}
+                    </div>
+                    <div className="flex mt-2">
+                      {[...Array(7)].map((_, i) => (
+                        <div key={i} className="w-2 h-2 bg-blue-700 rounded-full mx-1"></div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Mines Hunt</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Find the gems, avoid the mines! Test your luck and strategy.</p>
-              {currentUser ? (
-                <Link to="/mines-hunt">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Plinko Game</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Drop the ball and watch it bounce for big multipliers!</p>
+                  {currentUser ? (
+                    <Link to="/plinko-game">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
 
-          {/* Crash Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-red-500/20 to-yellow-500/20 flex items-center justify-center">
-              <div className="text-4xl font-bold text-red-500 animate-pulse-glow">
-                <span className="text-2xl">x</span>1.5<span className="text-yellow-400">+</span>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Crash Game</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Watch the multiplier rise and cash out before it crashes!</p>
-              {currentUser ? (
-                <Link to="/crash-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Flip Game Card */}
-          <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
-            <div className="h-40 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 flex items-center justify-center">
-              <div className="flex space-x-8 items-center">
-                <div className="text-4xl text-yellow-400 animate-flip">🪙</div>
-                <div className="text-4xl text-amber-400">💰</div>
-              </div>
-            </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-white text-center">Flip Game</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center pb-6">
-              <p className="text-gray-300 mb-6">Bet on heads or tails and enjoy consecutive win multipliers!</p>
-              {currentUser ? (
-                <Link to="/flip-game">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
+              {/* Mines Hunt Game Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                  <div className="relative">
+                    <div className="flex flex-wrap justify-center gap-2 w-32">
+                      {[...Array(9)].map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`w-8 h-8 rounded flex items-center justify-center ${i === 4 ? 'bg-blue-500' : 'bg-gray-700/50'}`}
+                        >
+                          {i === 4 && (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white animate-pulse-glow">
+                              <polygon points="6 8 17 5 21 18 9 21 4 8" />
+                              <polygon points="10 12 6 8 4 8" />
+                            </svg>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Mines Hunt</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Find the gems, avoid the mines! Test your luck and strategy.</p>
+                  {currentUser ? (
+                    <Link to="/mines-hunt">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Crash Game Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-red-500/20 to-yellow-500/20 flex items-center justify-center">
+                  <div className="text-4xl font-bold text-red-500 animate-pulse-glow">
+                    <span className="text-2xl">x</span>1.5<span className="text-yellow-400">+</span>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Crash Game</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Watch the multiplier rise and cash out before it crashes!</p>
+                  {currentUser ? (
+                    <Link to="/crash-game">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+              
+              {/* Flip Game Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 flex items-center justify-center">
+                  <div className="flex space-x-8 items-center">
+                    <div className="text-4xl text-yellow-400 animate-flip">🪙</div>
+                    <div className="text-4xl text-amber-400">💰</div>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Flip Game</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Bet on heads or tails and enjoy consecutive win multipliers!</p>
+                  {currentUser ? (
+                    <Link to="/flip-game">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Dragon Tower Card */}
+              <Card className="bg-game-panel/90 border-game-button/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+                <div className="h-40 bg-gradient-to-r from-orange-500/20 to-red-500/20 flex items-center justify-center">
+                  <div className="flex flex-col items-center">
+                    <div className="text-4xl text-orange-400 mb-2">🐉</div>
+                    <div className="flex space-x-2">
+                      {[...Array(3)].map((_, i) => (
+                        <div 
+                          key={i}
+                          className={`w-8 h-8 rounded-md flex items-center justify-center 
+                            ${i === 1 ? 'bg-yellow-500/30 border border-yellow-500/70 -mt-2' : 'bg-gray-700/50'}`}
+                        >
+                          {i === 1 && (
+                            <span className="text-yellow-400 text-lg">🥚</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-semibold text-white text-center">Dragon Tower</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-6">
+                  <p className="text-gray-300 mb-6">Climb the tower selecting dragon eggs for massive multipliers!</p>
+                  {currentUser ? (
+                    <Link to="/dragon-tower">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Play Now</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <Button className="bg-game-button hover:bg-opacity-90 text-black w-full sm:w-auto px-8">Login to Play</Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>            </div>
+          </div>
         </div>
         
         {/* Features Section */}
