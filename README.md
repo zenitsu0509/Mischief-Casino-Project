@@ -78,7 +78,29 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/c834a780-9513-4106-a896-6f97468a1290) and click on Share -> Publish.
+This project can be deployed using Lovable or Vercel.
+
+### Using Lovable
+
+Simply visit the [Lovable Project](https://lovable.dev/projects/c834a780-9513-4106-a896-6f97468a1290) and click on Share -> Publish.
+
+### Using Vercel
+
+This project is configured for easy deployment on Vercel.
+
+1. **Push your code to a Git repository** (e.g., GitHub, GitLab, Bitbucket).
+2. **Import your project into Vercel**:
+   - Go to your Vercel dashboard and click "Add New... > Project".
+   - Connect your Git provider and select your repository.
+3. **Configure Project Settings**:
+   - Vercel should automatically detect that this is a Vite project.
+   - The `vercel.json` file in the project root provides the build configuration (build command `npm run build`, output directory `dist`, and rewrites for SPA).
+   - **Environment Variables**: You will need to add the following environment variables in your Vercel project settings (Project > Settings > Environment Variables). These should match the ones in your local `.env` file:
+     - `VITE_GITHUB_TOKEN`: Your GitHub personal access token with `gist` scope.
+     - `VITE_GIST_ID`: The ID of your GitHub Gist used for storing user data.
+     - `VITE_GIST_FILENAME`: The filename within the Gist (e.g., `users.json`).
+     - `VITE_APP_NAME`: The name of your application (e.g., `Mines-Hunt`).
+4. **Deploy**: Click the "Deploy" button. Vercel will build and deploy your project.
 
 ## Can I connect a custom domain to my Lovable project?
 
