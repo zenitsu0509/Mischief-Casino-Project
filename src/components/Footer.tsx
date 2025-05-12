@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="gem bg-game-gem w-6 h-6"></div>
-              <span className="text-white font-bold text-xl">GemCasino</span>
+              <span className="text-white font-bold text-xl">Mischief Casino</span>
             </div>
             <p className="text-gray-300 text-sm">
               The most exciting online gaming platform with fair play and instant payouts.
@@ -39,6 +39,8 @@ const Footer: React.FC = () => {
               <li><Link to="/plinko-game" className="hover:text-game-gem">Plinko Game</Link></li>
               <li><Link to="/mines-hunt" className="hover:text-game-gem">Mines Hunt</Link></li>
               <li><Link to="/crash-game" className="hover:text-game-gem">Crash Game</Link></li>
+              <li><Link to="/flip-game" className="hover:text-game-gem">Flip Game</Link></li>
+              <li><Link to="/dragon-tower" className="hover:text-game-gem">Dragon Tower</Link></li>
             </ul>
           </div>
           
@@ -58,7 +60,7 @@ const Footer: React.FC = () => {
         <Separator className="my-6 bg-game-button/20" />
         
         <div className="text-center text-gray-400 text-sm">
-          <p>© {new Date().getFullYear()} GemCasino. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Mischief Casino. All rights reserved.</p>
           <p className="mt-2">
             Please play responsibly. Gambling should be entertaining and not seen as a way of making money.
           </p>
