@@ -4,6 +4,7 @@
 
 **URL**: https://lovable.dev/projects/c834a780-9513-4106-a896-6f97468a1290
 
+
 ## Environment Variables
 
 This project uses environment variables to manage configuration. Create a `.env` file in the project root with the following variables:
